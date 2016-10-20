@@ -1,0 +1,38 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game_Cloud.Windows"
+        xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.BugReport"
+        mc:Ignorable="d"
+        Title="Report a Bug" Height="400" Width="400" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <Game_Cloud:VM/>
+    </Window.DataContext>
+    <Border Margin="10" CornerRadius="30">
+        <Border.Background>
+            <SolidColorBrush Color="LightBlue" Opacity="0.50"/>
+        </Border.Background>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="20"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Left" Text="User Name:" FontWeight="Bold" Height="20" VerticalAlignment="Bottom"/>
+            <TextBlock HorizontalAlignment="Left" Grid.Row="2"  Text="Description:" FontWeight="Bold" VerticalAlignment="Top"/>
+            <TextBox x:Name="textName" Grid.Column="1" HorizontalAlignment="Stretch" Height="23"  VerticalAlignment="Bottom" Margin="10,0,10,0" IsEnabled="False" Text="{Binding AccountInfo.AccountName}"/>
+            <TextBox x:Name="textMessage" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" Text="Please describe what you were doing when the error occurred." Foreground="Gray" Margin="10,0,10,10" AcceptsReturn="True" GotFocus="textMessage_GotFocus" LostFocus="textMessage_LostFocus" />
+            <TextBlock Grid.Column="1" Grid.Row="3" TextWrapping="Wrap" Margin="10,0,60,0" FontSize="10" VerticalAlignment="Top">
+                <Hyperlink x:Name="hyperLog" Click="hyperLog_Click">Note: An error log will be attached to this message.  Click here to see its contents.</Hyperlink>
+            </TextBlock>
+            <Button x:Name="buttonSend" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Send" Height="25" Width="50" FontWeight="Bold" Margin="0,0,10,10" Click="buttonSend_Click"/>
+        </Grid>
+    </Border>
+</Window>

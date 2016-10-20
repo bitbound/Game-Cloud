@@ -1,0 +1,41 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game_Cloud.Windows"
+        xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.Subscribe"
+        mc:Ignorable="d"
+        Title="Game Cloud Subscription" Height="475" Width="400" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <Game_Cloud:VM/>
+    </Window.DataContext>
+    <Grid>
+        <TextBlock Text="Subscribe" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0,0"></TextBlock>
+        <Ellipse Height="3"  VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5,45,5,0" Stroke="Gray" Fill="Gray"></Ellipse>
+        <ScrollViewer Grid.ColumnSpan="2" Margin="0,50,0,0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10">
+                <TextBlock Margin="0,0,0,5">
+                    <Run Text="Subscriber Benefits: " FontWeight="Bold"/>
+                    <Run Text="10x the amount of storage! (100 to 1,024 MB)"/>
+                </TextBlock>
+                <TextBlock Text="Subscribing helps support continued development.  Being the sole developer, I appreciate all the help I can get!" Margin="0,0,0,10" TextWrapping="Wrap"></TextBlock>
+                <TextBlock Text="Step 1" FontWeight="Bold"  Margin="0,0,0,5"></TextBlock>
+                <TextBlock Text="If you already have a Profile ID, please go to Step 2.  Otherwise, click the Subscribe link below.  You will be redirected to a secure PayPal page to complete the transaction." TextWrapping="Wrap" Margin="0,0,0,10"></TextBlock>
+                <TextBlock  VerticalAlignment="Top" HorizontalAlignment="Left" Width="100">
+                    <Hyperlink x:Name="hyperPayPal" Foreground="{x:Null}" Click="hyperPayPal_Click">
+                        <Image Source="/Assets/subscribe.gif"></Image>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock FontWeight="Bold" Margin="10,0,0,25">$2 per month</TextBlock>
+                <TextBlock Text="Step 2" FontWeight="Bold" Margin="0,0,0,5"></TextBlock>
+                <TextBlock Text="After setting up the recurring payment, PayPal will send you a confirmation email.  Find the Profile ID listed on the email and enter it into the box below, then click Apply." TextWrapping="Wrap"  Margin="0,0,0,10"></TextBlock>
+                <TextBox x:Name="textProfileID" Margin="0,0,0,10"></TextBox>
+                <Grid>
+                    <TextBlock Text="Note: You can cancel easily at any time."></TextBlock>
+                    <Button x:Name="buttonApply" HorizontalAlignment="Right" Content="Apply" Width="50" Height="30" Click="buttonApply_Click"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

@@ -1,0 +1,60 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game_Cloud.Windows"
+        xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.Account"
+        mc:Ignorable="d"
+        Title="Game Cloud Account Settings" Height="400" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <Game_Cloud:VM/>
+    </Window.DataContext>
+    <Grid>
+        <TextBlock Text="Account Settings" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0,0"/>
+        <Ellipse Height="3"  VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5,45,5,0" Stroke="Gray" Fill="Gray"/>
+        <ScrollViewer Margin="0,50,0,0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10">
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Margin="0,5,20,0" Text="Account Type:" VerticalAlignment="Bottom"/>
+                        <TextBlock Margin="0,5,20,0" Text="Active Through:" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="textCancelSubscription" Margin="0,5,20,0" VerticalAlignment="Bottom" Visibility="Collapsed"><Hyperlink x:Name="hyperCancelSubscription" Click="hyperCancelSubscription_Click"><Run Text="Cancel Subscription"/></Hyperlink></TextBlock>
+                        <TextBlock x:Name="textSubscribeNow" Margin="0,5,20,0" VerticalAlignment="Bottom" Visibility="Collapsed"><Hyperlink  x:Name="hyperSubscribeNow" Click="hyperSubscribeNow_Click"><Run Text="Subscribe Now"/></Hyperlink></TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock x:Name="textAccountType" Margin="0,5,20,0" VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="textActiveThrough" VerticalAlignment="Bottom" Margin="0,5,20,0"/>
+                    </StackPanel>
+                </Grid>
+                <Expander Header="Password Change">
+                    <StackPanel>
+                        <TextBlock Margin="10,10,10,5" Text="New Password:" FontSize="10"/>
+                        <PasswordBox x:Name="passNewPassword" Margin="10,0,10,10"/>
+                        <TextBlock Margin="10,0,10,5" Text="Confirm New Password:" FontSize="10"/>
+                        <PasswordBox x:Name="passConfirmPassword" Margin="10,0,10,10"/>
+                        <Button x:Name="buttonSavePassword" Margin="10,0,10,10" HorizontalAlignment="Right" Content="Save" Width="50" Height="25" Click="buttonSavePassword_Click"/>
+                    </StackPanel>
+                </Expander>
+                <Expander Header="Account Recovery Options">
+                    <StackPanel>
+                        <CheckBox x:Name="checkMachineGuid" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Use this computer's GUID." IsChecked="{Binding AccountInfo.IsMachineGUIDEnabled}" Checked="checkMachineGuid_Checked" />
+                        <CheckBox x:Name="checkEmailReset" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Reset my password via email." IsChecked="{Binding AccountInfo.IsEmailEnabled}"/>
+                        <TextBlock Margin="10,0,10,5" Text="Email:" FontSize="10"/>
+                        <TextBox x:Name="textEmail" Margin="10,0,10,15" IsEnabled="{Binding IsChecked, ElementName=checkEmailReset}" Text="{Binding AccountInfo.Email}"/>
+                        <CheckBox x:Name="checkChallenge" Margin="10, 0, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Answer a challenge question." IsChecked="{Binding AccountInfo.IsQuestionEnabled}"/>
+                        <TextBlock Margin="10,0,10,5" Text="Question:" FontSize="10"/>
+                        <TextBox x:Name="textQuestion" Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding AccountInfo.ChallengeQuestion}"/>
+                        <TextBlock Margin="10,0,10,5" Text="Answer:" FontSize="10"/>
+                        <TextBox x:Name="textAnswer"  Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding AccountInfo.ChallengeResponse}"/>
+                        <Button x:Name="buttonSaveRecovery" Margin="10,0,10,10" HorizontalAlignment="Right" Content="Save" Width="50" Height="25" Click="buttonSaveRecovery_Click"/>
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
