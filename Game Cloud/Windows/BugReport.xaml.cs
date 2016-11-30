@@ -25,7 +25,7 @@ namespace Game_Cloud.Windows
         public BugReport()
         {
             InitializeComponent();
-            this.DataContext = VM.Current;
+            this.DataContext = Settings.Current;
         }
         private async void buttonSend_Click(object sender, RoutedEventArgs e)
         {
@@ -41,7 +41,7 @@ namespace Game_Cloud.Windows
                 {
                     var client = new HttpClient();
                     var request = new MultipartFormDataContent();
-                    var fi = new FileInfo(VMTemp.AppDataFolder + "ErrorLog.txt");
+                    var fi = new FileInfo(SettingsTemp.AppDataFolder + "ErrorLog.txt");
                     var message = textMessage.Text;
                     if (fi.Exists)
                     {
@@ -99,7 +99,7 @@ namespace Game_Cloud.Windows
 
         private void hyperLog_Click(object sender, RoutedEventArgs e)
         {
-            var fi = new FileInfo(VMTemp.AppDataFolder + "ErrorLog.txt");
+            var fi = new FileInfo(SettingsTemp.AppDataFolder + "ErrorLog.txt");
             if (!fi.Exists)
             {
                 fi.OpenWrite().Close();

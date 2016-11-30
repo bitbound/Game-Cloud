@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Report a Bug" Height="400" Width="400" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
     <Window.DataContext>
-        <Game_Cloud:VM/>
+        <Game_Cloud:Settings/>
     </Window.DataContext>
     <Border Margin="10" CornerRadius="30">
         <Border.Background>

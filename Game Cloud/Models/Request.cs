@@ -11,9 +11,9 @@ namespace Game_Cloud.Models
         public Request()
         {
             Application = "GameCloud";
-            AccountName = VM.Current.AccountInfo.AccountName;
-            AccountPassword = VM.Current.AccountInfo.Password;
-            AuthenticationCode = VMTemp.Current.AuthenticationCode;
+            AccountName = Settings.Current.AccountInfo.AccountName;
+            AccountPassword = Settings.Current.AccountInfo.Password;
+            AuthenticationCode = SettingsTemp.Current.AuthenticationCode;
         }
         public string AccountName { get; set; }
         public string AccountPassword { get; set; }

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Game Cloud Account Settings" Height="400" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
     <Window.DataContext>
-        <Game_Cloud:VM/>
+        <Game_Cloud:Settings/>
     </Window.DataContext>
     <Grid>
         <TextBlock Text="Account Settings" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0,0"/>

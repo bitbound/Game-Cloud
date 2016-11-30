@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Game Cloud" Height="400" Width="350" MinHeight="400" MinWidth="350" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded" Icon="Assets/GameCloud.png" Activated="Window_Activated">
     <Window.DataContext>
-        <local:VM/>
+        <local:Settings/>
     </Window.DataContext>
     <Grid x:Name="gridMain">
         <Button x:Name="buttonMenu" Width="25" Height="25"  VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,10,0" BorderBrush="{x:Null}" Click="buttonMenu_Click">
@@ -187,7 +187,7 @@
                         <TextBlock Text="Details" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,10,0,0" />
                         <ComboBox x:Name="comboKnownGames" VerticalAlignment="Top" HorizontalAlignment="Left" MinWidth="150" MaxWidth="150" Foreground="Gray" Margin="10,31,0,0" ItemsSource="{Binding KnownGames}" SelectionChanged="comboKnownGames_SelectionChanged" IsEditable="True" Text="Filter..." GotFocus="comboKnownGames_GotFocus" LostFocus="comboKnownGames_LostFocus">
                             <ComboBox.DataContext>
-                                <local:VMTemp/>
+                                <local:SettingsTemp/>
                             </ComboBox.DataContext>
                         </ComboBox>
                         <CheckBox x:Name="checkFilterInstalledGames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,55,0,0" Content="Only show installed games" FontSize="10" Checked="checkFilterInstalledGames_Checked" Unchecked="checkFilterInstalledGames_Unchecked">

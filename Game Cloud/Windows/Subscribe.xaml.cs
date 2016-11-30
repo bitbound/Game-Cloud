@@ -22,7 +22,7 @@ namespace Game_Cloud.Windows
         public Subscribe()
         {
             InitializeComponent();
-            DataContext = VM.Current;
+            DataContext = Settings.Current;
         }
 
         private void hyperPayPal_Click(object sender, RoutedEventArgs e)

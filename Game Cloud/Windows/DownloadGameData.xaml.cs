@@ -24,7 +24,7 @@ namespace Game_Cloud.Windows
         public DownloadGameData()
         {
             InitializeComponent();
-            this.DataContext = VM.Current;
+            this.DataContext = Settings.Current;
         }
 
         public static async Task<SyncedGame> SelectGame()

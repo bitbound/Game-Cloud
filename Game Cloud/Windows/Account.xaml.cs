@@ -25,14 +25,14 @@ namespace Game_Cloud.Windows
         public Account()
         {
             InitializeComponent();
-            this.DataContext = VM.Current;
+            this.DataContext = Settings.Current;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (VM.Current.AccountInfo.IsSubscriber)
+            if (Settings.Current.AccountInfo.IsSubscriber)
             {
                 textAccountType.Text = "Subscription Account";
-                textActiveThrough.Text = VM.Current.AccountInfo.LastPayment.AddMonths(1).ToString();
+                textActiveThrough.Text = Settings.Current.AccountInfo.LastPayment.AddMonths(1).ToString();
                 textCancelSubscription.Visibility = Visibility.Visible;
                 textSubscribeNow.Visibility = Visibility.Collapsed;
             }
@@ -76,29 +76,29 @@ namespace Game_Cloud.Windows
                     return;
                 }
             }
-            var strAccountBackup = JsonHelper.Encode(VM.Current.AccountInfo);
+            var strAccountBackup = JsonHelper.Encode(Settings.Current.AccountInfo);
             if (checkEmailReset.IsChecked == true)
             {
                 MessageBox.Show("I don't validate email addresses in any way.  Please make sure your email address is entered correctly.", "Verify Email", MessageBoxButton.OK, MessageBoxImage.Information);
-                VM.Current.AccountInfo.IsEmailEnabled = true;
-                VM.Current.AccountInfo.Email = textEmail.Text;
+                Settings.Current.AccountInfo.IsEmailEnabled = true;
+                Settings.Current.AccountInfo.Email = textEmail.Text;
             }
             else
             {
-                VM.Current.AccountInfo.IsEmailEnabled = false;
-                VM.Current.AccountInfo.Email = "";
+                Settings.Current.AccountInfo.IsEmailEnabled = false;
+                Settings.Current.AccountInfo.Email = "";
             }
             if (checkChallenge.IsChecked == true)
             {
-                VM.Current.AccountInfo.IsQuestionEnabled = true;
-                VM.Current.AccountInfo.ChallengeQuestion = textQuestion.Text;
-                VM.Current.AccountInfo.ChallengeResponse = textAnswer.Text;
+                Settings.Current.AccountInfo.IsQuestionEnabled = true;
+                Settings.Current.AccountInfo.ChallengeQuestion = textQuestion.Text;
+                Settings.Current.AccountInfo.ChallengeResponse = textAnswer.Text;
             }
             else
             {
-                VM.Current.AccountInfo.IsQuestionEnabled = false;
-                VM.Current.AccountInfo.ChallengeQuestion = "";
-                VM.Current.AccountInfo.ChallengeResponse = "";
+                Settings.Current.AccountInfo.IsQuestionEnabled = false;
+                Settings.Current.AccountInfo.ChallengeQuestion = "";
+                Settings.Current.AccountInfo.ChallengeResponse = "";
             }
             if (checkMachineGuid.IsChecked == true)
             {
@@ -106,23 +106,23 @@ namespace Game_Cloud.Windows
                 {
                     RegistryKey regKeyBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                     var key = regKeyBase.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-                    VM.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
-                    VM.Current.AccountInfo.IsMachineGUIDEnabled = true;
+                    Settings.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
+                    Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
                     key.Close();
                     regKeyBase.Close();
                 }
                 else
                 {
                     var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-                    VM.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
-                    VM.Current.AccountInfo.IsMachineGUIDEnabled = true;
+                    Settings.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
+                    Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
                     key.Close();
                 }
             }
             else
             {
-                VM.Current.AccountInfo.IsMachineGUIDEnabled = false;
-                VM.Current.AccountInfo.MachineGUID = null;
+                Settings.Current.AccountInfo.IsMachineGUIDEnabled = false;
+                Settings.Current.AccountInfo.MachineGUID = null;
             }
             var result = await Services.UpdateRecoveryOptions();
             if (result.IsSuccessStatusCode)
@@ -132,16 +132,16 @@ namespace Game_Cloud.Windows
             else
             {
                 var accountBackup = JsonHelper.Decode<AccountInfo>(strAccountBackup);
-                VM.Current.AccountInfo.IsEmailEnabled = accountBackup.IsEmailEnabled;
-                VM.Current.AccountInfo.Email = accountBackup.Email;
-                VM.Current.AccountInfo.IsQuestionEnabled = accountBackup.IsQuestionEnabled;
-                VM.Current.AccountInfo.ChallengeQuestion = accountBackup.ChallengeQuestion;
-                VM.Current.AccountInfo.ChallengeResponse = accountBackup.ChallengeResponse;
-                VM.Current.AccountInfo.IsMachineGUIDEnabled = accountBackup.IsMachineGUIDEnabled;
-                VM.Current.AccountInfo.MachineGUID = accountBackup.MachineGUID;
+                Settings.Current.AccountInfo.IsEmailEnabled = accountBackup.IsEmailEnabled;
+                Settings.Current.AccountInfo.Email = accountBackup.Email;
+                Settings.Current.AccountInfo.IsQuestionEnabled = accountBackup.IsQuestionEnabled;
+                Settings.Current.AccountInfo.ChallengeQuestion = accountBackup.ChallengeQuestion;
+                Settings.Current.AccountInfo.ChallengeResponse = accountBackup.ChallengeResponse;
+                Settings.Current.AccountInfo.IsMachineGUIDEnabled = accountBackup.IsMachineGUIDEnabled;
+                Settings.Current.AccountInfo.MachineGUID = accountBackup.MachineGUID;
                 MessageBox.Show("The update failed.  Unknown error.  Please try again or send a bug report.", "Update Failed", MessageBoxButton.OK, MessageBoxImage.Information);
             }
-            VM.Current.Save();
+            Settings.Current.Save();
         }
 
         private async void buttonSavePassword_Click(object sender, RoutedEventArgs e)
@@ -160,8 +160,8 @@ namespace Game_Cloud.Windows
                     MessageBox.Show("Your stored current password is incorrect.  Log out and back in, then try again.", "Incorrect Password", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                VM.Current.AccountInfo.Password = passNewPassword.Password;
-                VM.Current.Save();
+                Settings.Current.AccountInfo.Password = passNewPassword.Password;
+                Settings.Current.Save();
                 passNewPassword.Clear();
                 passConfirmPassword.Clear();
                 MessageBox.Show("Password changed successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -178,7 +178,7 @@ namespace Game_Cloud.Windows
             RegistryKey regKeyBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
             var key = regKeyBase.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
             var value = key.GetValue("MachineGuid").ToString();
-            VM.Current.AccountInfo.IsMachineGUIDEnabled = true;
+            Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
             key.Close();
             regKeyBase.Close();
             if (value == null)

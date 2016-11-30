@@ -84,6 +84,7 @@ namespace Game_Cloud.Models
                 lastServerSync = value;
             }
         }
+        public List<GameFileInfo> FileList { get; set; } = new List<GameFileInfo>();
         public override string ToString()
         {
             return Name;

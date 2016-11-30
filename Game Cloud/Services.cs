@@ -13,7 +13,7 @@ namespace Game_Cloud
     public static class Services
     {
 #if DEBUG
-        public static string ServicePath = "http://localhost:10677/Services/GameCloud";
+        public static string ServicePath = "http://localhost:58901/Services/GameCloud";
 #else
         public static string ServicePath = "https://translucency.info/Services/GameCloud";
 #endif
@@ -34,12 +34,7 @@ namespace Game_Cloud
             {
                 Command = "CheckAccount",
             };
-            var response = await POSTContent(content);
-            if (response.IsSuccessStatusCode)
-            {
-                VMTemp.Current.AuthenticationCode = await response.Content.ReadAsStringAsync();
-            }
-            return response;
+            return await POSTContent(content);
         }
         public static async Task<HttpResponseMessage> CreateAccount(string NewAccountName, string HashedPassword)
         {
@@ -51,7 +46,7 @@ namespace Game_Cloud
             };
             return await POSTContent(content);
         }
-        public static async Task<bool> AddGame(SyncedGame SyncedGame, string LocalFilePath)
+        public static async Task<bool> AddGame(SyncedGame SyncedGame)
         {
             var content = new Request()
             {
@@ -59,24 +54,7 @@ namespace Game_Cloud
                 SyncedGame = SyncedGame
             };
             var result = await POSTContent(content);
-            if (!result.IsSuccessStatusCode)
-            {
-                return false;
-            }
-            var webClient = new WebClient();
-            webClient.Headers.Add("Command", "AddGame");
-            webClient.Headers.Add("AuthenticationCode", VMTemp.Current.AuthenticationCode);
-            webClient.Headers.Add("AccountName", VM.Current.AccountInfo.AccountName);
-            webClient.Headers.Add("SyncedGame", SyncedGame.Name);
-            try
-            {
-                await webClient.UploadFileTaskAsync(ServicePath, LocalFilePath);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return result.IsSuccessStatusCode;
         }
         public static async Task<HttpResponseMessage> DeleteAccount()
         {
@@ -122,7 +100,35 @@ namespace Game_Cloud
             };
             return await POSTContent(content);
         }
-        public static async Task<bool> SyncGame(SyncedGame SyncedGame, string LocalFilePath)
+        public static async Task<HttpResponseMessage> GetFile(SyncedGame SyncedGame, string RelativePath)
+        {
+            var content = new Request()
+            {
+                Command = "GetFile",
+                SyncedGame = SyncedGame,
+                Note = RelativePath
+            };
+            return await POSTContent(content);
+        }
+        public static async Task<bool> UploadFile(SyncedGame SyncedGame, string FilePath, string RelativePath)
+        {
+            var webClient = new WebClient();
+            webClient.Headers.Add("Command", "UploadFile");
+            webClient.Headers.Add("AuthenticationCode", SettingsTemp.Current.AuthenticationCode);
+            webClient.Headers.Add("AccountName", Settings.Current.AccountInfo.AccountName);
+            webClient.Headers.Add("GameName", SyncedGame.Name);
+            webClient.Headers.Add("RelativePath", RelativePath);
+            try
+            {
+                await webClient.UploadFileTaskAsync(ServicePath, FilePath);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static async Task<bool> SyncGame(SyncedGame SyncedGame)
         {
             var content = new Request()
             {
@@ -130,24 +136,7 @@ namespace Game_Cloud
                 SyncedGame = SyncedGame
             };
             var result = await POSTContent(content);
-            if (!result.IsSuccessStatusCode)
-            {
-                return false;
-            }
-            var webClient = new WebClient();
-            webClient.Headers.Add("Command", "AddGame");
-            webClient.Headers.Add("AuthenticationCode", VMTemp.Current.AuthenticationCode);
-            webClient.Headers.Add("AccountName", VM.Current.AccountInfo.AccountName);
-            webClient.Headers.Add("SyncedGame", SyncedGame.Name);
-            try
-            {
-                await webClient.UploadFileTaskAsync(ServicePath, LocalFilePath);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return result.IsSuccessStatusCode;
         }
         public static async Task<HttpResponseMessage> GetKnownGames()
         {
@@ -206,7 +195,7 @@ namespace Game_Cloud
             var content = new Request()
             {
                 Command = "UpdateRecoveryOptions",
-                AccountInfo = VM.Current.AccountInfo,
+                AccountInfo = Settings.Current.AccountInfo,
             };
             return await POSTContent(content);
         }

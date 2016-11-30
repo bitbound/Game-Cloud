@@ -21,11 +21,11 @@ namespace Game_Cloud
         public static string ResolveEnvironmentVariables(string OriginalPath)
         {
             string newPath = "";
-            if (OriginalPath.Contains("%steamapps%") && VMTemp.SteamAppsFolder == null)
+            if (OriginalPath.Contains("%steamapps%") && SettingsTemp.SteamAppsFolder == null)
             {
                 return null;
             }
-            newPath = OriginalPath.Replace("%steamapps%", VMTemp.SteamAppsFolder);
+            newPath = OriginalPath.Replace("%steamapps%", SettingsTemp.SteamAppsFolder);
             newPath = newPath.Replace("%systemdrive%", Path.GetPathRoot(Environment.SystemDirectory));
             newPath = newPath.Replace("%localappdata%", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
             newPath = newPath.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
@@ -44,9 +44,9 @@ namespace Game_Cloud
             {
                 newPath = "%systemdrive%" + OriginalPath.Remove(0, 2);
             }
-            if (VMTemp.SteamAppsFolder != null && OriginalPath.ToLower().Contains(VMTemp.SteamAppsFolder.ToLower()))
+            if (SettingsTemp.SteamAppsFolder != null && OriginalPath.ToLower().Contains(SettingsTemp.SteamAppsFolder.ToLower()))
             {
-                newPath = "%steamapps%" + OriginalPath.Remove(0, VMTemp.SteamAppsFolder.Length);
+                newPath = "%steamapps%" + OriginalPath.Remove(0, SettingsTemp.SteamAppsFolder.Length);
             }
             if (OriginalPath.ToLower().Contains(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToLower()))
             {

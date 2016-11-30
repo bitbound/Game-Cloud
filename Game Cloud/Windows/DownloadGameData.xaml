@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Download Game Data" Height="300" Width="300" WindowStyle="None" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Window.DataContext>
-        <Game_Cloud:VM/>
+        <Game_Cloud:Settings/>
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>

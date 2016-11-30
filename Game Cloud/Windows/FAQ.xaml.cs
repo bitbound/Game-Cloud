@@ -22,7 +22,7 @@ namespace Game_Cloud.Windows
         public FAQ()
         {
             InitializeComponent();
-            this.DataContext = VM.Current;
+            this.DataContext = Settings.Current;
         }
     }
 }

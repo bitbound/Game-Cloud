@@ -24,7 +24,7 @@ namespace Game_Cloud.Windows
         public Options()
         {
             InitializeComponent();
-            DataContext = VM.Current;
+            DataContext = Settings.Current;
             Current = this;
         }
 
@@ -40,13 +40,13 @@ namespace Game_Cloud.Windows
 
         private void buttonBrowseBackups_Click(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(VMTemp.AppDataFolder + @"Backups\"))
+            if (Directory.Exists(SettingsTemp.AppDataFolder + @"Backups\"))
             {
-                System.Diagnostics.Process.Start(VMTemp.AppDataFolder + @"Backups\");
+                System.Diagnostics.Process.Start(SettingsTemp.AppDataFolder + @"Backups\");
             }
-            else if (System.IO.Directory.Exists(VMTemp.AppDataFolder + @""))
+            else if (System.IO.Directory.Exists(SettingsTemp.AppDataFolder + @""))
             {
-                System.Diagnostics.Process.Start(VMTemp.AppDataFolder + @"");
+                System.Diagnostics.Process.Start(SettingsTemp.AppDataFolder + @"");
             }
             else
             {
@@ -61,9 +61,9 @@ namespace Game_Cloud.Windows
             {
                 try
                 {
-                    Directory.Delete(VMTemp.AppDataFolder, true);
+                    Directory.Delete(SettingsTemp.AppDataFolder, true);
                     MessageBox.Show("Game Cloud files have been removed.  The application will now close.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    VMTemp.Current.Uninstall = true;
+                    SettingsTemp.Current.Uninstall = true;
                     App.Current.Shutdown();
                 }
                 catch

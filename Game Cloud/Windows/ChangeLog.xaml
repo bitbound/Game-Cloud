@@ -11,6 +11,12 @@
         <Ellipse Height="3"  VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5,45,5,0" Stroke="Gray" Fill="Gray"/>
         <ScrollViewer Margin="5,60,5,0" VerticalScrollBarVisibility="Auto">
             <StackPanel>
+
+                <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 1.2.0 "/>
+                    <Run Text=" November 30, 2016"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Rewrote file synchronization, upload, and download processes, resulting in much greater efficiency." TextWrapping="Wrap"></TextBlock>
                 
                 <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 1.1.0 "/>

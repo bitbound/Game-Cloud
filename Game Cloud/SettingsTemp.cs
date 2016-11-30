@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Game_Cloud
 {
-    public class VMTemp
+    public class SettingsTemp
     {
-        public static VMTemp Current { get; set; } = new VMTemp();
+        public static SettingsTemp Current { get; set; } = new SettingsTemp();
         public static string AppDataFolder
         {
             get
