@@ -439,6 +439,59 @@ namespace Game_Cloud
         #endregion Tab Control
 
         #region Tab - Synced Games
+        private void dataSyncedGames_PreviewMouseRightButtonUp(Object sender, MouseButtonEventArgs e)
+        {
+            dataSyncedGames.ContextMenu.IsOpen = true;
+            if (dataSyncedGames.SelectedItems.Count > 0)
+            {
+                dataSyncedGames.ContextMenu.IsEnabled = true;
+            }
+            else
+            {
+                dataSyncedGames.ContextMenu.IsEnabled = false;
+            }
+        }
+        private void menuOpenFolder_Click(Object sender, RoutedEventArgs e)
+        {
+            if (dataSyncedGames.SelectedItems.Count > 0)
+            {
+                var folderPath = Utilities.ResolveEnvironmentVariables((dataSyncedGames.SelectedItems[0] as SyncedGame).Path);
+                Process.Start("explorer.exe", folderPath);
+            }
+        }
+
+        private async void menuForceUpdate_Click(Object sender, RoutedEventArgs e)
+        {
+            if (dataSyncedGames.SelectedItems.Count > 0)
+            {
+                var result = MessageBox.Show("Are you sure you want to force an update for the selected games?  This will replace all files stored on the server with the ones currently on this computer.", "Confirm Update", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    var listGames = dataSyncedGames.SelectedItems.Cast<SyncedGame>();
+                    foreach (var selectedGame in listGames.ToList())
+                    {
+                        await Task.Delay(500);
+                        var response = await Services.RemoveGame(selectedGame);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Settings.Current.AccountInfo.Games.Remove(selectedGame);
+                            await AnalyzeChanges();
+                            dataSyncedGames.Items.Refresh();
+                            Settings.Current.Save();
+                            var added = Utilities.RoundDateTime(DateTime.Now);
+                            var ss = new SyncedGame() { Name = selectedGame.Name, Path = selectedGame.Path, LastLocalSync = added, LastServerSync = added };
+                            await AddGame(ss);
+                        }
+                        else
+                        {
+                            Utilities.ShowStatus("There was a problem removing the game.  Please try again.", Colors.Red);
+                            return;
+                        }
+                    }
+                    Utilities.ShowStatus("Forced update completed.", Colors.Green);
+                }
+            }
+        }
         private async void buttonSync_Click(object sender, RoutedEventArgs e)
         {
             if (dataSyncedGames.SelectedIndex == -1)
@@ -598,7 +651,7 @@ namespace Game_Cloud
             Utilities.ShowStatus("Adding save files...", Colors.Green);
             var added = Utilities.RoundDateTime(DateTime.Now);
             var ss = new SyncedGame() { Name = selectedGame.Name, Path = selectedGame.Path, LastLocalSync = added, LastServerSync = added };
-            await AddGame(ss, sender);
+            await AddGame(ss);
         }
         private void comboKnownGames_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -735,7 +788,7 @@ namespace Game_Cloud
                 comboKnownGames.Items.Refresh();
             }
             var ss = new SyncedGame() { Name = textCustomName.Text, Path = Utilities.FormatPathWithVariables(textCustomPath.Text), LastLocalSync = added, LastServerSync = added };
-            await AddGame(ss, sender);
+            await AddGame(ss);
         }
         private void buttonBrowseCustom_Click(object sender, RoutedEventArgs e)
         {
@@ -768,7 +821,6 @@ namespace Game_Cloud
         {
             tabMain.IsEnabled = false;
             var totalGames = dataSyncedGames.SelectedItems.Count;
-            //var listGames = dataSyncedGames.SelectedItems.Cast<SyncedGame>().ToList();
             for (var i = 0; i < totalGames; i++)
             {
                 if (i > 0)
@@ -813,24 +865,17 @@ namespace Game_Cloud
                 var remoteGame = SettingsTemp.Current.RemoteAccount.Games.Find(sg => sg.Name == selectedGame.Name);
                 foreach (var remoteFile in remoteGame.FileList)
                 {
-                    var localFile = selectedGame.FileList.Find(gfi => gfi.FileName == remoteFile.FileName);
-                    if (!File.Exists(gameSaveDir + remoteFile.RelativePath) || localFile == null)
+                    if (!selectedGame.FileList.Exists(gfi => gfi.FileName == remoteFile.FileName))
                     {
-                        if (remoteFile.LastWriteTime > selectedGame.LastLocalSync || selectedGame.LastLocalSync == null)
-                        {
-                            if (!selectedGame.FileList.Exists(gfi=>gfi.FileName == remoteFile.FileName))
-                            {
-                                selectedGame.FileList.Add(remoteFile);
-                            }
-                            Directory.CreateDirectory(Path.GetDirectoryName(gameSaveDir + remoteFile.RelativePath));
-                            var response = await Services.GetFile(selectedGame, remoteFile.RelativePath);
-                            var byteArr = await response.Content.ReadAsByteArrayAsync();
-                            File.WriteAllBytes(gameSaveDir + remoteFile.RelativePath, byteArr);
-                        }
-                        else
-                        {
-                            selectedGame.FileList.RemoveAll(gfi=>gfi.FileName == remoteFile.FileName);
-                        }
+                        selectedGame.FileList.Add(remoteFile);
+                    }
+                    var localFile = selectedGame.FileList.Find(gfi => gfi.FileName == remoteFile.FileName);
+                    if (!File.Exists(gameSaveDir + remoteFile.RelativePath))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(gameSaveDir + remoteFile.RelativePath));
+                        var response = await Services.GetFile(selectedGame, remoteFile.RelativePath);
+                        var byteArr = await response.Content.ReadAsByteArrayAsync();
+                        File.WriteAllBytes(gameSaveDir + remoteFile.RelativePath, byteArr);
                     }
                     else if (remoteFile.LastWriteTime > localFile?.LastWriteTime)
                     {
@@ -850,32 +895,25 @@ namespace Game_Cloud
                     
                     if (remoteFile == null)
                     {
-                        if (localFile.CreationTime > selectedGame.LastServerSync || selectedGame.LastLocalSync == null)
+                        if (!selectedGame.FileList.Exists(gfi => gfi.FileName == localFile.Name))
                         {
-                            if (!selectedGame.FileList.Exists(gfi => gfi.FileName == localFile.Name))
+                            selectedGame.FileList.Add(new GameFileInfo()
                             {
-                                selectedGame.FileList.Add(new GameFileInfo()
-                                {
-                                    FileName = localFile.Name,
-                                    RelativePath = strLocalFile.Replace(gameSaveDir, "\\"),
-                                    LastWriteTime = Utilities.RoundDateTime(localFile.LastWriteTime)
-                                });
-                            }
-                            else
-                            {
-                                selectedGame.FileList.Find(gfi => gfi.FileName == localFile.Name).LastWriteTime = Utilities.RoundDateTime(localFile.LastWriteTime);
-                            }
-                            var response = await Services.UploadFile(selectedGame, strLocalFile, strLocalFile.Replace(gameSaveDir, "\\"));
-                            if (!response)
-                            {
-                                selectedGame = JsonHelper.Decode<SyncedGame>(gameTempBackup);
-                                Utilities.ShowStatus("There was a problem uploading file " + localFile.Name + ".", Colors.Red);
-                                return;
-                            }
+                                FileName = localFile.Name,
+                                RelativePath = strLocalFile.Replace(gameSaveDir, "\\"),
+                                LastWriteTime = Utilities.RoundDateTime(localFile.LastWriteTime)
+                            });
                         }
                         else
                         {
-                            localFile.Delete();
+                            selectedGame.FileList.Find(gfi => gfi.FileName == localFile.Name).LastWriteTime = Utilities.RoundDateTime(localFile.LastWriteTime);
+                        }
+                        var response = await Services.UploadFile(selectedGame, strLocalFile, strLocalFile.Replace(gameSaveDir, "\\"));
+                        if (!response)
+                        {
+                            selectedGame = JsonHelper.Decode<SyncedGame>(gameTempBackup);
+                            Utilities.ShowStatus("There was a problem uploading file " + localFile.Name + ".", Colors.Red);
+                            return;
                         }
                     }
                     else if (localFile.LastWriteTime > remoteFile.LastWriteTime)
@@ -933,10 +971,9 @@ namespace Game_Cloud
             tabMain.IsEnabled = true;
             Settings.Current.Save();
         }
-        private async Task AddGame(SyncedGame SyncedGame, object Sender)
+        private async Task AddGame(SyncedGame SyncedGame)
         {
             var ss = SyncedGame;
-            var sender = Sender;
             var contentPath = Utilities.ResolveEnvironmentVariables(ss.Path);
             if (!Directory.Exists(contentPath))
             {
@@ -1100,7 +1137,7 @@ namespace Game_Cloud
             foreach (var remoteGame in SettingsTemp.Current.RemoteAccount.Games)
             {
                 var localGame = Settings.Current.AccountInfo.Games.Find(sg => sg.Name == remoteGame.Name);
-                if (!Settings.Current.AccountInfo.Games.Exists(sg => sg.Name == remoteGame.Name))
+                if (localGame == null)
                 {
                     Settings.Current.AccountInfo.Games.Add(new SyncedGame()
                     {
@@ -1118,6 +1155,14 @@ namespace Game_Cloud
                     {
                         localGame.Status = "☁⬇";
                         localGame.StatusDetails = "Changes are available for download.";
+                    }
+                    foreach (var file in remoteGame.FileList)
+                    {
+                        if (!File.Exists(Utilities.ResolveEnvironmentVariables(remoteGame.Path) + "\\" + file.RelativePath))
+                        {
+                            localGame.Status = "☁⬇";
+                            localGame.StatusDetails = "Changes are available for download.";
+                        }
                     }
                 }
             }
@@ -1233,7 +1278,7 @@ namespace Game_Cloud
             Directory.CreateDirectory(SettingsTemp.AppDataFolder);
             File.AppendAllText(SettingsTemp.AppDataFolder + @"ErrorLog.txt", DateTime.Now.ToString() + "\t" + Message + "\t" + Environment.NewLine);
         }
-        #endregion Helper Methods
 
+        #endregion Helper Methods
     }
 }

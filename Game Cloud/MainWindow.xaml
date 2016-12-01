@@ -133,7 +133,7 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding AccountInfo.Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke">
+                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding AccountInfo.Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" PreviewMouseRightButtonUp="dataSyncedGames_PreviewMouseRightButtonUp">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
@@ -147,6 +147,12 @@
                                     <TextBlock FontSize="10" Text="{Binding StatusDetails}" ToolTip="{Binding StatusDetails}"/>
                                 </DataTemplate>
                             </DataGrid.RowDetailsTemplate>
+                            <DataGrid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Name="menuOpenFolder" Header="Open Folder" ToolTip="Opens the save folder in Windows Explorer." Click="menuOpenFolder_Click"></MenuItem>
+                                    <MenuItem Name="menuForceUpdate" Header="Force Update" ToolTip="Forces the current local files to replace the server's." Click="menuForceUpdate_Click"></MenuItem>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
                         </DataGrid>
                         <StackPanel x:Name="stackNoGames" Height="125" Width="250" Margin="0,0,30,0"  VerticalAlignment="Center" HorizontalAlignment="Center" Background="#BFFFFFFF" Visibility="Collapsed">
                             <TextBlock Text="You have no games synced yet." Margin="0,40,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
