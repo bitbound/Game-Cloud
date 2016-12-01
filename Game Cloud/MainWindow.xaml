@@ -133,7 +133,7 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding AccountInfo.Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" PreviewMouseRightButtonUp="dataSyncedGames_PreviewMouseRightButtonUp">
+                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding AccountInfo.Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
