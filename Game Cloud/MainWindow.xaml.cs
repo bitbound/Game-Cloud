@@ -1187,15 +1187,15 @@ namespace Game_Cloud
                     var creationTime = File.GetCreationTime(file);
                     if (lastWriteTime > game.LastLocalSync || creationTime > game.LastLocalSync)
                     {
-                        if (game.Status.Contains("☁⬇"))
-                        {
-                            game.Status += "⬆";
-                            game.StatusDetails = "Changes are available for both download and upload.";
-                        }
-                        else
+                        if (!game.Status.Contains("☁⬇"))
                         {
                             game.Status = "☁⬆";
                             game.StatusDetails = "Changes are available for upload.";
+                        }
+                        else if (!game.Status.Contains("⬆"))
+                        {
+                            game.Status += "⬆";
+                            game.StatusDetails = "Changes are available for both download and upload.";
                         }
                     }
                 }
