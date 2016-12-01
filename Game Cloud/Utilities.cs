@@ -26,7 +26,7 @@ namespace Game_Cloud
                 return null;
             }
             newPath = OriginalPath.Replace("%steamapps%", SettingsTemp.SteamAppsFolder);
-            newPath = newPath.Replace("%systemdrive%", Path.GetPathRoot(Environment.SystemDirectory));
+            newPath = newPath.Replace("%systemdrive%", Path.GetPathRoot(Environment.SystemDirectory).Replace("\\", ""));
             newPath = newPath.Replace("%localappdata%", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
             newPath = newPath.Replace("%appdata%", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
             newPath = newPath.Replace("%userprofile%", Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
