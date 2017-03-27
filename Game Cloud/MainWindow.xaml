@@ -34,11 +34,6 @@
                             <Image Source="Assets/UIAboutBox_64x.png" Width="20"></Image>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="menuFAQ" Header="FAQ" Click="menuFAQ_Click">
-                        <MenuItem.Icon>
-                            <Image Source="Assets/Question_32xLG.png" Width="20"></Image>
-                        </MenuItem.Icon>
-                    </MenuItem>
                 </ContextMenu>
             </Button.ContextMenu>
             <Button.OpacityMask>
@@ -81,11 +76,11 @@
                 <TextBlock Text=" / "></TextBlock>
                 <TextBlock x:Name="textStorageTotal" Text="{Binding AccountInfo.StorageTotal, StringFormat=\{0:N0\}}"></TextBlock>
                 <TextBlock Text=" MB"></TextBlock>
-                <TextBlock x:Name="textGetMoreStorage" Margin="10,0,0,0" VerticalAlignment="Center" Cursor="Hand" FontSize="10">
-                        <Hyperlink x:Name="hyperGetMoreStorage" Click="hyperGetMoreStorage_Click">Get more storage.</Hyperlink>
-                </TextBlock>
             </StackPanel>
             <ProgressBar x:Name="progressStorage" Height="10" Margin="0,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=stackStorage, Mode=OneWay}" ValueChanged="progressStorage_ValueChanged" Value="{Binding AccountInfo.StoragePercentage}"/>
+            <TextBlock x:Name="textDonate" Margin="0,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" FontSize="10">
+                        <Hyperlink x:Name="hyperDonate" Click="hyperDonate_Click">Donations are appreciated!</Hyperlink>
+            </TextBlock>
         </Grid>
         <TextBlock x:Name="textStatus" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" MaxWidth="275" Foreground="Green" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,100,15,0" TextWrapping="Wrap"/>
         <Grid x:Name="gridLogIn" Margin="10, 100, 10, 10">
@@ -273,13 +268,12 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Button x:Name="buttonEmailMe" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Content=" Email Me " Width="80" Height="30" Margin="0,0,5,0" Click="buttonEmailMe_Click"/>
-                        <Button x:Name="buttonReportBug" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Content=" Report Bug " Width="80" Height="30" Margin="0,0,100,0" Click="buttonReportBug_Click"/>
-                        <WebBrowser x:Name="webFeedback" Grid.Row="1" Source="http://translucency.info/Pages/GameCloudFeedback.cshtml"  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="buttonEmailMe" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Email Me " Width="100" Height="50" Click="buttonEmailMe_Click"/>
+                        <Button x:Name="buttonReportBug" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Report Bug " Width="100" Height="50" Click="buttonReportBug_Click"/>
                     </Grid>
                 </TabItem>
             </TabControl>

@@ -27,36 +27,6 @@ namespace Game_Cloud.Windows
             InitializeComponent();
             this.DataContext = Settings.Current;
         }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (Settings.Current.AccountInfo.IsSubscriber)
-            {
-                textAccountType.Text = "Subscription Account";
-                textActiveThrough.Text = Settings.Current.AccountInfo.LastPayment.AddMonths(1).ToString();
-                textCancelSubscription.Visibility = Visibility.Visible;
-                textSubscribeNow.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                textAccountType.Text = "Free Account";
-                textActiveThrough.Text = "N/A";
-                textSubscribeNow.Visibility = Visibility.Visible;
-                textCancelSubscription.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void hyperSubscribeNow_Click(object sender, RoutedEventArgs e)
-        {
-            var win = new Windows.Subscribe();
-            win.Owner = App.Current.MainWindow;
-            this.Close();
-            win.ShowDialog();
-        }
-
-        private void hyperCancelSubscription_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://translucency.info/Pages/GameCloudCancel.cshtml");
-        }
 
         private async void buttonSaveRecovery_Click(object sender, RoutedEventArgs e)
         {

@@ -79,9 +79,6 @@ namespace Game_Cloud.Models
                 FirePropertyChanged("StoragePercentage");
             }
         }
-        public bool IsSubscriber { get; set; }
-        public string SubscriberID { get; set; }
-        public DateTime LastPayment { get; set; }
         private List<SyncedGame> games;
         public List<SyncedGame> Games
         {

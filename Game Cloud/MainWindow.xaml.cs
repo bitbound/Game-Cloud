@@ -164,13 +164,6 @@ namespace Game_Cloud
             win.ShowDialog();
         }
 
-        private void menuFAQ_Click(object sender, RoutedEventArgs e)
-        {
-            var win = new Windows.FAQ();
-            win.Owner = this;
-            win.ShowDialog();
-        }
-
         private void menuAccount_Click(object sender, RoutedEventArgs e)
         {
             var win = new Windows.Account();
@@ -183,11 +176,9 @@ namespace Game_Cloud
             await CheckForUpdates(false);
         }
 
-        private void hyperGetMoreStorage_Click(object sender, RoutedEventArgs e)
+        private void hyperDonate_Click(object sender, RoutedEventArgs e)
         {
-            var win = new Windows.Subscribe();
-            win.Owner = App.Current.MainWindow;
-            win.ShowDialog();
+            Process.Start("https://paypal.me/Translucency");
         }
 
         private void hyperSignUp_Click(object sender, RoutedEventArgs e)
@@ -492,7 +483,7 @@ namespace Game_Cloud
             }
             if (Settings.Current.AccountInfo.StorageUsed >= Settings.Current.AccountInfo.StorageTotal)
             {
-                MessageBox.Show("You've exceeded your storage limit.  The sync feature has been locked.  You must remove games to bring your storage use below the limit or increase your storage limit by subscribing.  You can download save files before removing them to retain a local copy.", "Storage Limit Exceeded", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("You've exceeded your storage limit.  The sync feature has been locked.  You must remove games to bring your storage use below the limit.  You can download save files before removing them to retain a local copy.", "Storage Limit Exceeded", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
             await SyncGame();
@@ -1076,9 +1067,6 @@ namespace Game_Cloud
             SettingsTemp.Current.RemoteAccount = JsonHelper.Decode<AccountInfo>(strResponseGetAccount);
             Settings.Current.AccountInfo.StorageUsed = SettingsTemp.Current.RemoteAccount.StorageUsed;
             Settings.Current.AccountInfo.StorageTotal = SettingsTemp.Current.RemoteAccount.StorageTotal;
-            Settings.Current.AccountInfo.IsSubscriber = SettingsTemp.Current.RemoteAccount.IsSubscriber;
-            Settings.Current.AccountInfo.SubscriberID = SettingsTemp.Current.RemoteAccount.SubscriberID;
-            Settings.Current.AccountInfo.LastPayment = SettingsTemp.Current.RemoteAccount.LastPayment;
             Settings.Current.AccountInfo.IsEmailEnabled = SettingsTemp.Current.RemoteAccount.IsEmailEnabled;
             Settings.Current.AccountInfo.IsQuestionEnabled = SettingsTemp.Current.RemoteAccount.IsQuestionEnabled;
             Settings.Current.AccountInfo.IsMachineGUIDEnabled = SettingsTemp.Current.RemoteAccount.IsMachineGUIDEnabled;
@@ -1086,14 +1074,6 @@ namespace Game_Cloud
             Settings.Current.AccountInfo.ChallengeQuestion = SettingsTemp.Current.RemoteAccount.ChallengeQuestion;
             Settings.Current.AccountInfo.ChallengeResponse = SettingsTemp.Current.RemoteAccount.ChallengeResponse;
             Settings.Current.Save();
-            if (Settings.Current.AccountInfo.IsSubscriber)
-            {
-                textGetMoreStorage.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                textGetMoreStorage.Visibility = Visibility.Visible;
-            }
         }
         public async Task AnalyzeChanges()
         {

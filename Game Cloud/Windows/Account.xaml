@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Game_Cloud.Windows"
         xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.Account"
         mc:Ignorable="d"
-        Title="Game Cloud Account Settings" Height="400" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner">
+        Title="Game Cloud Account Settings" Height="400" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
     <Window.DataContext>
         <Game_Cloud:Settings/>
     </Window.DataContext>
@@ -21,14 +21,10 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Margin="0,5,20,0" Text="Account Type:" VerticalAlignment="Bottom"/>
-                        <TextBlock Margin="0,5,20,0" Text="Active Through:" VerticalAlignment="Bottom"/>
-                        <TextBlock x:Name="textCancelSubscription" Margin="0,5,20,0" VerticalAlignment="Bottom" Visibility="Collapsed"><Hyperlink x:Name="hyperCancelSubscription" Click="hyperCancelSubscription_Click"><Run Text="Cancel Subscription"/></Hyperlink></TextBlock>
-                        <TextBlock x:Name="textSubscribeNow" Margin="0,5,20,0" VerticalAlignment="Bottom" Visibility="Collapsed"><Hyperlink  x:Name="hyperSubscribeNow" Click="hyperSubscribeNow_Click"><Run Text="Subscribe Now"/></Hyperlink></TextBlock>
+                        <TextBlock Margin="0,5,20,0" Text="Account Name:" VerticalAlignment="Bottom"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <TextBlock x:Name="textAccountType" Margin="0,5,20,0" VerticalAlignment="Bottom"/>
-                        <TextBlock x:Name="textActiveThrough" VerticalAlignment="Bottom" Margin="0,5,20,0"/>
+                        <TextBlock x:Name="textAccountName" Margin="0,5,20,0" VerticalAlignment="Bottom" Text="{Binding AccountInfo.AccountName}" />
                     </StackPanel>
                 </Grid>
                 <Expander Header="Password Change">

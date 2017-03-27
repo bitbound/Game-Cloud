@@ -172,15 +172,6 @@ namespace Game_Cloud
             };
             return await POSTContent(content);
         }
-        public static async Task<HttpResponseMessage> ApplySubscription(string ProfileID)
-        {
-            var content = new Request()
-            {
-                Command = "ApplySubscription",
-                Note = ProfileID,
-            };
-            return await POSTContent(content);
-        }
         public static async Task<HttpResponseMessage> ChangePassword (string HashedPassword)
         {
             var content = new Request()

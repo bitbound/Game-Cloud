@@ -122,9 +122,6 @@
     <Compile Include="Windows\DownloadGameData.xaml.cs">
       <DependentUpon>DownloadGameData.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\FAQ.xaml.cs">
-      <DependentUpon>FAQ.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\LicenseInfo.xaml.cs">
       <DependentUpon>LicenseInfo.xaml</DependentUpon>
     </Compile>
@@ -133,9 +130,6 @@
     </Compile>
     <Compile Include="Windows\PasswordReset.xaml.cs">
       <DependentUpon>PasswordReset.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Subscribe.xaml.cs">
-      <DependentUpon>Subscribe.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -173,10 +167,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\FAQ.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\LicenseInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,10 +176,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\PasswordReset.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Subscribe.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
