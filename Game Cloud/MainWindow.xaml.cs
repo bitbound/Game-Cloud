@@ -32,6 +32,7 @@ namespace Game_Cloud
         public static MainWindow Current { get; set; }
         public MainWindow()
         {
+            App.Current.DispatcherUnhandledException += DispatcherUnhandledException;
             InitializeComponent();
             this.DataContext = Settings.Current;
             comboKnownGames.DataContext = SettingsTemp.Current;
@@ -41,13 +42,12 @@ namespace Game_Cloud
             var args = Environment.GetCommandLineArgs();
             if (args.Length > 1 && File.Exists(args[1]))
             {
-                var count = 0;
                 var success = false;
+                var startTime = DateTime.Now;
                 while (success == false)
                 {
                     System.Threading.Thread.Sleep(200);
-                    count++;
-                    if (count > 25)
+                    if (DateTime.Now - startTime > TimeSpan.FromSeconds(5))
                     {
                         break;
                     }
@@ -58,7 +58,7 @@ namespace Game_Cloud
                     }
                     catch (Exception ex)
                     {
-                        WriteToLog(ex.Message + ex.StackTrace);
+                        WriteToLog(ex);
                         continue;
                     }
                 }
@@ -74,9 +74,6 @@ namespace Game_Cloud
                 App.Current.Shutdown();
                 return;
             }
-#if !DEBUG
-            App.Current.DispatcherUnhandledException += DispatcherUnhandledException;
-#endif
         }
 
         #region Main Window
@@ -194,7 +191,8 @@ namespace Game_Cloud
         {
             e.Handled = true;
             Utilities.ShowStatus("An error has occurred.  Please send a bug report.", Colors.Red);
-            WriteToLog(e.Exception.Message + "\t" + e.Exception.StackTrace);
+            tabMain.IsEnabled = true;
+            WriteToLog(e.Exception);
         }
         #endregion Main Window
 
@@ -231,7 +229,7 @@ namespace Game_Cloud
                 buttonLogIn.IsEnabled = true;
                 return;
             }
-            await LogIn(textAccountName.Text, passPassword.Password);
+            await LogIn(textAccountName.Text.Trim(), passPassword.Password);
         }
         private async void hyperForgotPassword_Click(object sender, RoutedEventArgs e)
         {
@@ -344,11 +342,11 @@ namespace Game_Cloud
             }
             try
             {
-                var response = await Services.CreateAccount(textNewAccountName.Text, HashHelper.HashString(passwordNew.Password));
+                var response = await Services.CreateAccount(textNewAccountName.Text.Trim(), HashHelper.HashString(passwordNew.Password));
                 if (await response.Content.ReadAsStringAsync() == "true")
                 {
                     Utilities.ShowStatus("New account created!", Colors.Green);
-                    await LogIn(textNewAccountName.Text, passwordNew.Password);
+                    await LogIn(textNewAccountName.Text.Trim(), passwordNew.Password);
                 }
                 else
                 {
@@ -357,7 +355,8 @@ namespace Game_Cloud
             }
             catch (Exception ex)
             {
-                Utilities.ShowStatus("Error: " + ex.Message, Colors.Red);
+                WriteToLog(ex);
+                Utilities.ShowStatus("An error occurred.  Please send a bug report.", Colors.Red);
                 (sender as Button).IsEnabled = true;
                 return;
             }
@@ -458,7 +457,7 @@ namespace Game_Cloud
                             dataSyncedGames.Items.Refresh();
                             Settings.Current.Save();
                             var added = Utilities.RoundDateTime(DateTime.Now);
-                            var ss = new SyncedGame() { Name = selectedGame.Name, Path = selectedGame.Path, LastLocalSync = added, LastServerSync = added };
+                            var ss = new SyncedGame() { Name = selectedGame.Name.Trim(), Path = selectedGame.Path.Trim(), LastLocalSync = added, LastServerSync = added };
                             await AddGame(ss);
                         }
                         else
@@ -757,7 +756,7 @@ namespace Game_Cloud
             tabMain.IsEnabled = false;
             Utilities.ShowStatus("Adding save files...", Colors.Green);
             var added = Utilities.RoundDateTime(DateTime.Now);
-            var kg = new KnownGame() { Name = textCustomName.Text, Path = Utilities.FormatPathWithVariables(textCustomPath.Text) };
+            var kg = new KnownGame() { Name = textCustomName.Text.Trim(), Path = Utilities.FormatPathWithVariables(textCustomPath.Text.Trim()) };
             if (checkSubmitToDatabase.IsChecked == true && !SettingsTemp.Current.KnownGames.Exists(knowngame=> knowngame.Name == kg.Name))
             {
                 var response = await Services.AddKnownGame(kg);
@@ -766,7 +765,7 @@ namespace Game_Cloud
                 SettingsTemp.Current.KnownGames.AddRange(JsonHelper.Decode<List<KnownGame>>(strResponse));
                 comboKnownGames.Items.Refresh();
             }
-            var ss = new SyncedGame() { Name = textCustomName.Text, Path = Utilities.FormatPathWithVariables(textCustomPath.Text), LastLocalSync = added, LastServerSync = added };
+            var ss = new SyncedGame() { Name = textCustomName.Text.Trim(), Path = Utilities.FormatPathWithVariables(textCustomPath.Text.Trim()), LastLocalSync = added, LastServerSync = added };
             await AddGame(ss);
         }
         private void buttonBrowseCustom_Click(object sender, RoutedEventArgs e)
@@ -1011,8 +1010,7 @@ namespace Game_Cloud
                     throw new Exception("Incorrect username or password.  Try again or create a new account.");
                 }
                 var response = await responseCheckAccount.Content.ReadAsStringAsync();
-                Guid authCode;
-                if (Guid.TryParse(strResponseCheckAccount, out authCode))
+                if (Guid.TryParse(strResponseCheckAccount, out Guid authCode))
                 {
                     SettingsTemp.Current.AuthenticationCode = strResponseCheckAccount;
                     if (Settings.Current.RememberAccount)
@@ -1046,13 +1044,14 @@ namespace Game_Cloud
                 }
                 else
                 {
-                    
+
                     throw new Exception("Unknown error.");
                 }
             }
             catch (Exception ex)
             {
-                Utilities.ShowStatus("Error: " + ex.Message, Colors.Red);
+                WriteToLog(ex);
+                Utilities.ShowStatus("An error occurred.  Please send a bug report.", Colors.Red);
             }
             finally
             {
@@ -1223,10 +1222,15 @@ namespace Game_Cloud
                 listFiles.RemoveAt(0);
             }
         }
-        public void WriteToLog(string Message)
+        public void WriteToLog(Exception ExMessage)
         {
             Directory.CreateDirectory(SettingsTemp.AppDataFolder);
-            File.AppendAllText(SettingsTemp.AppDataFolder + @"ErrorLog.txt", DateTime.Now.ToString() + "\t" + Message + "\t" + Environment.NewLine);
+            var ex = ExMessage;
+            while (ex != null)
+            {
+                File.AppendAllText(SettingsTemp.AppDataFolder + @"ErrorLog.txt", DateTime.Now.ToString() + "\t" + ex.Message + "\t" + ex.Source + "\t" + ex.StackTrace + Environment.NewLine);
+                ex = ex.InnerException;
+            }
         }
 
         #endregion Helper Methods

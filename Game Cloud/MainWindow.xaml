@@ -252,7 +252,7 @@
                                 <TextBlock Text="Enter the folder path where the game's save files are stored.  If you don't know, you can Bing/Google it.  Keep the 'Submit to database' box checked to add the path to Game Cloud's online database so others can benefit from your efforts!" MaxWidth="400" TextWrapping="Wrap"></TextBlock>
                             </Image.ToolTip>
                         </Image>
-                        <TextBox x:Name="textCustomPath" VerticalAlignment="Top" Margin="10,31,80,0" />
+                        <TextBox x:Name="textCustomPath" VerticalAlignment="Top" Margin="10,31,80,0"  ToolTip="Type or paste a path, or click Browse." />
                         <Button x:Name="buttonBrowseCustom" Content=" Browse " Height="25" VerticalAlignment="Top" Margin="0,31,15,0" HorizontalAlignment="Right" Click="buttonBrowseCustom_Click"/>
                         <TextBlock Text="Game Name" Margin="10,58,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                         <TextBox x:Name="textCustomName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,79,0,0" Width="200" />
@@ -272,7 +272,9 @@
                             <ColumnDefinition />
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">Questions? Suggestions?</TextBlock>
                         <Button x:Name="buttonEmailMe" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Email Me " Width="100" Height="50" Click="buttonEmailMe_Click"/>
+                        <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">Found a bug?</TextBlock>
                         <Button x:Name="buttonReportBug" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Report Bug " Width="100" Height="50" Click="buttonReportBug_Click"/>
                     </Grid>
                 </TabItem>

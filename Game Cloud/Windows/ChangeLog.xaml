@@ -13,6 +13,14 @@
             <StackPanel>
 
                 <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 1.4.1 "/>
+                    <Run Text=" March 28, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Fixed a bug where a space at the end of a game's name could cause sync errors." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Improved error handling." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Removed surveys." TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 1.4.0 "/>
                     <Run Text=" March 26, 2017"/>
                 </TextBlock>
