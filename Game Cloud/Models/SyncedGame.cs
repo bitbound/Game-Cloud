@@ -11,8 +11,18 @@ namespace Game_Cloud.Models
     public class SyncedGame
     {
         public string Name { get; set; }
+        public string Platform { get; set; }
         public string Path { get; set; }
         public double StorageUse { get; set; }
+        public string FileFilterOperator { get; set; }
+        public string FileFilterPattern { get; set; }
+        public string ID
+        {
+            get
+            {
+                return Name + Platform + Path;
+            }
+        }
         private string status;
         public string Status
         {

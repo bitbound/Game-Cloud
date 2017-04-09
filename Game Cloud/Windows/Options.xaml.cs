@@ -28,7 +28,7 @@ namespace Game_Cloud.Windows
             Current = this;
         }
 
-        private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        private void toggleBackups_Unchecked(object sender, RoutedEventArgs e)
         {
             toggleBackups.Content = "Off";
         }
@@ -37,16 +37,26 @@ namespace Game_Cloud.Windows
         {
             toggleBackups.Content = "On";
         }
+        private async void toggleHelpRequests_Checked(object sender, RoutedEventArgs e)
+        {
+            toggleHelpRequests.Content = "On";
+            await MainWindow.Current.UpdateQuestions();
+        }
 
+        private void toggleHelpRequests_Unchecked(object sender, RoutedEventArgs e)
+        {
+            toggleHelpRequests.Content = "Off";
+            MainWindow.Current.borderHelpRequestsAvailable.Visibility = Visibility.Collapsed;
+        }
         private void buttonBrowseBackups_Click(object sender, RoutedEventArgs e)
         {
-            if (Directory.Exists(SettingsTemp.AppDataFolder + @"Backups\"))
+            if (Directory.Exists(Utilities.AppDataFolder + @"Backups\"))
             {
-                System.Diagnostics.Process.Start(SettingsTemp.AppDataFolder + @"Backups\");
+                System.Diagnostics.Process.Start(Utilities.AppDataFolder + @"Backups\");
             }
-            else if (System.IO.Directory.Exists(SettingsTemp.AppDataFolder + @""))
+            else if (System.IO.Directory.Exists(Utilities.AppDataFolder + @""))
             {
-                System.Diagnostics.Process.Start(SettingsTemp.AppDataFolder + @"");
+                System.Diagnostics.Process.Start(Utilities.AppDataFolder + @"");
             }
             else
             {
@@ -61,9 +71,9 @@ namespace Game_Cloud.Windows
             {
                 try
                 {
-                    Directory.Delete(SettingsTemp.AppDataFolder, true);
+                    Directory.Delete(Utilities.AppDataFolder, true);
                     MessageBox.Show("Game Cloud files have been removed.  The application will now close.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    SettingsTemp.Current.Uninstall = true;
+                    Temp.Current.Uninstall = true;
                     App.Current.Shutdown();
                 }
                 catch
@@ -92,9 +102,15 @@ namespace Game_Cloud.Windows
             }
             Utilities.ShowStatus("Downloading game files...", Colors.Green);
             var response = await Services.GetGame(selectedGame);
+            if (response == null)
+            {
+                return;
+            }
             var byteRemoteGame = await response.Content.ReadAsByteArrayAsync();
             File.WriteAllBytes(filePicker.FileName, byteRemoteGame);
             Utilities.ShowStatus("Done.", Colors.Green);
         }
+
+        
     }
 }

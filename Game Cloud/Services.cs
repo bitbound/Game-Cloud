@@ -1,11 +1,14 @@
 ﻿using Game_Cloud.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Game_Cloud
@@ -15,24 +18,44 @@ namespace Game_Cloud
 #if DEBUG
         public static string ServicePath = "http://localhost:58901/Services/GameCloud";
 #else
-        public static string ServicePath = "https://translucency.info/Services/GameCloud";
+        public static string ServicePath = "https://test.translucency.info/Services/GameCloud";
 #endif
         public static async Task<HttpResponseMessage> POSTContent(Request Content)
         {
             var client = new HttpClient();
             client.Timeout = TimeSpan.FromMinutes(3);
-            var response = await client.PostAsync(Services.ServicePath, new StringContent(JsonHelper.Encode(Content)));
+            var response = await client.PostAsync(Services.ServicePath, new StringContent(Json.Encode(Content)));
             if (!response.IsSuccessStatusCode)
             {
                 throw new HttpRequestException("Error " + response.StatusCode + ": " + response.ReasonPhrase);
             }
+            if (await response.Content.ReadAsStringAsync() == "unauthorized")
+            {
+                if (MainWindow.Current.gridGames.IsVisible)
+                {
+                    MessageBox.Show("Your authentication token has expired, likely due to logging in from another location.  Please log in again.", "Login Expired", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    MainWindow.Current.hyperLogOut.DoClick();
+                    MainWindow.Current.passPassword.Password = "";
+                }
+                return null;
+            }
             return response;
         }
-        public static async Task<HttpResponseMessage> CheckAccount()
+        public static async Task<HttpResponseMessage> CheckAccount(string Password)
         {
             var content = new Request()
             {
-                Command = "CheckAccount",
+                Command = "CheckAccount"
+            };
+            content.AccountPassword = Password;
+            return await POSTContent(content);
+        }
+        public static async Task<HttpResponseMessage> UpdatePassword(string HashedPassword)
+        {
+            var content = new Request()
+            {
+                Command = "UpdatePassword",
+                Note = HashedPassword
             };
             return await POSTContent(content);
         }
@@ -46,7 +69,7 @@ namespace Game_Cloud
             };
             return await POSTContent(content);
         }
-        public static async Task<bool> AddGame(SyncedGame SyncedGame)
+        public static async Task<bool?> AddGame(SyncedGame SyncedGame)
         {
             var content = new Request()
             {
@@ -54,7 +77,7 @@ namespace Game_Cloud
                 SyncedGame = SyncedGame
             };
             var result = await POSTContent(content);
-            return result.IsSuccessStatusCode;
+            return result?.IsSuccessStatusCode;
         }
         public static async Task<HttpResponseMessage> DeleteAccount()
         {
@@ -110,12 +133,12 @@ namespace Game_Cloud
             };
             return await POSTContent(content);
         }
-        public static async Task<bool> UploadFile(SyncedGame SyncedGame, string FilePath, string RelativePath)
+        public static async Task<bool?> UploadFile(SyncedGame SyncedGame, string FilePath, string RelativePath)
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Command", "UploadFile");
-            webClient.Headers.Add("AuthenticationCode", SettingsTemp.Current.AuthenticationCode);
-            webClient.Headers.Add("AccountName", Settings.Current.AccountInfo.AccountName);
+            webClient.Headers.Add("AuthenticationCode", Settings.Current.AuthenticationCode);
+            webClient.Headers.Add("AccountName", AccountInfo.Current.AccountName);
             webClient.Headers.Add("GameName", SyncedGame.Name);
             webClient.Headers.Add("RelativePath", RelativePath);
             try
@@ -128,7 +151,7 @@ namespace Game_Cloud
                 return false;
             }
         }
-        public static async Task<bool> SyncGame(SyncedGame SyncedGame)
+        public static async Task<bool?> SyncGame(SyncedGame SyncedGame)
         {
             var content = new Request()
             {
@@ -186,7 +209,7 @@ namespace Game_Cloud
             var content = new Request()
             {
                 Command = "UpdateRecoveryOptions",
-                AccountInfo = Settings.Current.AccountInfo,
+                AccountInfo = AccountInfo.Current,
             };
             return await POSTContent(content);
         }
@@ -197,6 +220,23 @@ namespace Game_Cloud
                 Command = "RecoverPassword",
                 AccountName = AccountName,
                 Note = Method + "|" + Answer,
+            };
+            return await POSTContent(content);
+        }
+        public static async Task<HttpResponseMessage> GetHelpRequests()
+        {
+            var content = new Request()
+            {
+                Command = "GetHelpRequests"
+            };
+            return await POSTContent(content);
+        }
+        public static async Task<HttpResponseMessage> UpdateHelpRequest(Question TheQuestion)
+        {
+            var content = new Request()
+            {
+                Command = "UpdateHelpRequest",
+                Question = TheQuestion
             };
             return await POSTContent(content);
         }

@@ -25,7 +25,20 @@
                 <TextBlock>)</TextBlock>
             </TextBlock>
             <Button x:Name="buttonLicense" HorizontalAlignment="Left" Margin="0, 0, 0, 10" Height="25" Width="55" Click="buttonLicense_Click">License...</Button>
-            <TextBox Height="120" Margin="0, 0, 0, 5" TextWrapping="Wrap" Text="Game Cloud's goal is to bring cloud-saving functionality to all PC games.  I strive to combine the ease-of-use found in services like Steam Cloud with increased visibility and control over what's happening with your files." IsReadOnly="True"/>
+            <ScrollViewer Height="120" Margin="0, 0, 0, 5" VerticalScrollBarVisibility="Auto">
+                <TextBlock TextWrapping="Wrap">
+                    Game Cloud's goal is to bring cloud-saving functionality to all PC games.  I strive to combine the ease-of-use found in services like Steam Cloud with increased visibility and control over what's happening with your files.
+                    <LineBreak />
+                    <LineBreak />
+                    Third-party licenses:
+                    <LineBreak/>
+                    Fody: <Hyperlink NavigateUri="https://github.com/Fody/Fody">Project</Hyperlink>  |  <Hyperlink NavigateUri="https://github.com/Fody/Fody/blob/master/license.txt">License</Hyperlink>
+                    <LineBreak/>
+                    Costura.Fody: <Hyperlink NavigateUri="https://github.com/Fody/Costura">Project</Hyperlink>  |  <Hyperlink NavigateUri="https://github.com/Fody/Costura/blob/master/license.txt">License</Hyperlink>
+                    <LineBreak/>
+                    System.Net.WebSockets.Client.Managed: <Hyperlink NavigateUri="https://github.com/PingmanTools/System.Net.WebSockets.Client.Managed">Project</Hyperlink>  |  <Hyperlink NavigateUri="https://github.com/PingmanTools/System.Net.WebSockets.Client.Managed/blob/master/LICENSE">License</Hyperlink>
+                </TextBlock>
+            </ScrollViewer>
             <Button Content="OK" HorizontalAlignment="Right" Width="60" Height="30" IsCancel="True" IsDefault="True"/>
         </StackPanel>
     </Grid>

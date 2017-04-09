@@ -13,6 +13,17 @@
             <StackPanel>
 
                 <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.0 "/>
+                    <Run Text=" April 9, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added Ask for Help tab (in-app community wiki)." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added real-time chat." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added welcome/tutorial window." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added Platform attribute for saved game info." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added file filter for saved games." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Numerous bug fixes and minor UI changes." TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 1.4.1 "/>
                     <Run Text=" March 28, 2017"/>
                 </TextBlock>

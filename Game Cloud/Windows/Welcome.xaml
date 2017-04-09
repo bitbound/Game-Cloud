@@ -1,0 +1,21 @@
+﻿<Window x:Name="window" x:Class="Game_Cloud.Windows.Welcome"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game_Cloud.Windows"
+        mc:Ignorable="d"
+        Title="Welcome to Game Cloud" Height="350" Width="350" WindowStartupLocation="CenterOwner" Loaded="window_Loaded">
+    <Grid Margin="0,0,0,0">
+        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Jump To:" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboJumpTo" HorizontalAlignment="Left" Margin="70,10,0,0" VerticalAlignment="Top" Width="120" ItemsSource="{Binding HelpPages, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Welcome}}}" SelectionChanged="comboJumpTo_SelectionChanged"/>
+        <ScrollViewer x:Name="scrollContent" Margin="10,40,10,60" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock x:Name="textTitle" FontWeight="Bold" TextAlignment="Center" FontSize="16" Margin="0,0,0,15" />
+                <TextBlock x:Name="textContent" TextWrapping="Wrap"/>
+            </StackPanel>
+        </ScrollViewer>
+        <Button x:Name="buttonPrevious" Content="Previous" HorizontalAlignment="Left" Margin="10,0,0,10"  Width="75" Height="30" VerticalAlignment="Bottom" Click="buttonPrevious_Click"/>
+        <Button x:Name="buttonNext" Content="Next" HorizontalAlignment="Right" Margin="0,0,10,10" Width="75" Height="30" VerticalAlignment="Bottom" Click="buttonNext_Click"/>
+    </Grid>
+</Window>

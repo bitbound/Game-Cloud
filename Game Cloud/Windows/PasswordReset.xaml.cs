@@ -30,6 +30,10 @@ namespace Game_Cloud.Windows
         private async void buttonEmail_Click(object sender, RoutedEventArgs e)
         {
             var response = await Services.RecoverPassword(accountName, "email", null);
+            if (response == null)
+            {
+                return;
+            }
             if (response.IsSuccessStatusCode)
             {
                 MessageBox.Show("Password reset successful.  Please check your email for further instructions.  If the email doesn't arrive within a couple minutes, check your junk/spam folder.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -63,6 +67,10 @@ namespace Game_Cloud.Windows
             var value = key.GetValue("MachineGuid").ToString();
             key.Close();
             var response = await Services.RecoverPassword(accountName, "guid", value);
+            if (response == null)
+            {
+                return;
+            }
             var tempPass = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -84,6 +92,10 @@ namespace Game_Cloud.Windows
         private async void buttonSubmitAnswer_Click(object sender, RoutedEventArgs e)
         {
             var response = await Services.RecoverPassword(accountName, "question", textAnswer.Text);
+            if (response == null)
+            {
+                return;
+            }
             var tempPass = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

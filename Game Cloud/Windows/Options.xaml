@@ -21,6 +21,7 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" VerticalAlignment="Top" Margin="10,15,10,0">
                     <TextBlock Text="Create local backups" FontSize="14" Margin="0,0,0,15"></TextBlock>
+                    <TextBlock Text="Show help requests" FontSize="14" Margin="0,0,0,15"></TextBlock>
                     <TextBlock Text="Maximum backup size" FontSize="14"  Margin="0,0,0,10"></TextBlock>
                     <TextBlock Text="Maximum backup files" FontSize="14"  Margin="0,0,0,20"></TextBlock>
                     <TextBlock Text="Browse backup folder" FontSize="14"  Margin="0,0,0,23"></TextBlock>
@@ -29,7 +30,8 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,15,10,0">
-                    <ToggleButton x:Name="toggleBackups" Height="25" Width="75" Margin="0,0,0,10" HorizontalAlignment="Left" Content="Off" IsChecked="{Binding CreateLocalBackups, Mode=TwoWay}" Checked="toggleBackups_Checked" Unchecked="ToggleButton_Unchecked"></ToggleButton>
+                    <ToggleButton x:Name="toggleBackups" Height="25" Width="75" Margin="0,0,0,10" HorizontalAlignment="Left" Content="Off" IsChecked="{Binding CreateLocalBackups, Mode=TwoWay}" Checked="toggleBackups_Checked" Unchecked="toggleBackups_Unchecked"></ToggleButton>
+                    <ToggleButton x:Name="toggleHelpRequests" Height="25" Width="75" Margin="0,0,0,10" HorizontalAlignment="Left" Content="Off" IsChecked="{Binding ShowHelpRequests, Mode=TwoWay}" Checked="toggleHelpRequests_Checked" Unchecked="toggleHelpRequests_Unchecked"></ToggleButton>
                     <Grid Margin="0,0,0,10">
                         <TextBox HorizontalAlignment="Left" Width="75" VerticalAlignment="Center" Text="{Binding MaximumBackupSize}"></TextBox>
                         <TextBlock Text="MB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="80,0,0,0"/>

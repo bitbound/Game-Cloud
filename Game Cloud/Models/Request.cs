@@ -11,9 +11,8 @@ namespace Game_Cloud.Models
         public Request()
         {
             Application = "GameCloud";
-            AccountName = Settings.Current.AccountInfo.AccountName;
-            AccountPassword = Settings.Current.AccountInfo.Password;
-            AuthenticationCode = SettingsTemp.Current.AuthenticationCode;
+            AccountName = AccountInfo.Current.AccountName;
+            AuthenticationCode = Settings.Current.AuthenticationCode;
         }
         public string AccountName { get; set; }
         public string AccountPassword { get; set; }
@@ -21,6 +20,7 @@ namespace Game_Cloud.Models
         public SyncedGame SyncedGame { get; set; }
         public List<SyncedGame> GameList { get; set; }
         public KnownGame KnownGame { get; set; }
+        public Question Question { get; set; }
         public string Note { get; set; }
     }
 }

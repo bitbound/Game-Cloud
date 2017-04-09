@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game_Cloud.Windows"
-        xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.DownloadGameData"
+        xmlns:Game_Cloud="clr-namespace:Game_Cloud" xmlns:Models="clr-namespace:Game_Cloud.Models" x:Class="Game_Cloud.Windows.DownloadGameData"
         mc:Ignorable="d"
         Title="Download Game Data" Height="300" Width="300" WindowStyle="None" WindowStartupLocation="CenterOwner" Loaded="Window_Loaded">
     <Window.DataContext>
-        <Game_Cloud:Settings/>
+        <Models:AccountInfo/>
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Select a game to download files..." FontSize="14" FontWeight="Bold" Grid.Row="0" Margin="10"/>
-        <ListBox x:Name="listGames" Grid.Row="1" Margin="10,0,10,10" ItemsSource="{Binding AccountInfo.Games}"/>
+        <ListBox x:Name="listGames" Grid.Row="1" Margin="10,0,10,10" ItemsSource="{Binding Games}"/>
         <Button x:Name="buttonCancel" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50" Height="25" Margin="0,0,75,5" Click="buttonCancel_Click" Content="Cancel"/>
         <Button x:Name="buttonOK" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="50" Height="25" Margin="0,0,10,5" FontWeight="Bold" Click="buttonOK_Click" Content="OK"/>
     </Grid>

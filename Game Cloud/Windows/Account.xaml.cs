@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,9 +26,30 @@ namespace Game_Cloud.Windows
         public Account()
         {
             InitializeComponent();
-            this.DataContext = Settings.Current;
+            this.DataContext = AccountInfo.Current;
         }
 
+        private async void buttonSaveEmail_Click(object sender, RoutedEventArgs e)
+        {
+            var strAccountBackup = Json.Encode(AccountInfo.Current);
+            AccountInfo.Current.Email = textEmail.Text;
+            var result = await Services.UpdateRecoveryOptions();
+            if (result == null)
+            {
+                return;
+            }
+            if (result.IsSuccessStatusCode)
+            {
+                MessageBox.Show("Email has been saved.  Please verify it was entered correctly.", "Save Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                var accountBackup = Json.Decode<AccountInfo>(strAccountBackup);
+                AccountInfo.Current.Email = accountBackup.Email;
+                MessageBox.Show("The update failed.  Unknown error.  Please try again or send a bug report.", "Update Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            Settings.Current.Save();
+        }
         private async void buttonSaveRecovery_Click(object sender, RoutedEventArgs e)
         {
             if (checkEmailReset.IsChecked == true)
@@ -46,29 +68,28 @@ namespace Game_Cloud.Windows
                     return;
                 }
             }
-            var strAccountBackup = JsonHelper.Encode(Settings.Current.AccountInfo);
+            var strAccountBackup = Json.Encode(AccountInfo.Current);
             if (checkEmailReset.IsChecked == true)
             {
-                MessageBox.Show("I don't validate email addresses in any way.  Please make sure your email address is entered correctly.", "Verify Email", MessageBoxButton.OK, MessageBoxImage.Information);
-                Settings.Current.AccountInfo.IsEmailEnabled = true;
-                Settings.Current.AccountInfo.Email = textEmail.Text;
+                AccountInfo.Current.IsEmailEnabled = true;
+                AccountInfo.Current.Email = textEmail.Text;
             }
             else
             {
-                Settings.Current.AccountInfo.IsEmailEnabled = false;
-                Settings.Current.AccountInfo.Email = "";
+                AccountInfo.Current.IsEmailEnabled = false;
+                AccountInfo.Current.Email = "";
             }
             if (checkChallenge.IsChecked == true)
             {
-                Settings.Current.AccountInfo.IsQuestionEnabled = true;
-                Settings.Current.AccountInfo.ChallengeQuestion = textQuestion.Text;
-                Settings.Current.AccountInfo.ChallengeResponse = textAnswer.Text;
+                AccountInfo.Current.IsQuestionEnabled = true;
+                AccountInfo.Current.ChallengeQuestion = textQuestion.Text;
+                AccountInfo.Current.ChallengeResponse = textAnswer.Text;
             }
             else
             {
-                Settings.Current.AccountInfo.IsQuestionEnabled = false;
-                Settings.Current.AccountInfo.ChallengeQuestion = "";
-                Settings.Current.AccountInfo.ChallengeResponse = "";
+                AccountInfo.Current.IsQuestionEnabled = false;
+                AccountInfo.Current.ChallengeQuestion = "";
+                AccountInfo.Current.ChallengeResponse = "";
             }
             if (checkMachineGuid.IsChecked == true)
             {
@@ -76,39 +97,43 @@ namespace Game_Cloud.Windows
                 {
                     RegistryKey regKeyBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                     var key = regKeyBase.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-                    Settings.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
-                    Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
+                    AccountInfo.Current.MachineGUID = key.GetValue("MachineGuid").ToString();
+                    AccountInfo.Current.IsMachineGUIDEnabled = true;
                     key.Close();
                     regKeyBase.Close();
                 }
                 else
                 {
                     var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
-                    Settings.Current.AccountInfo.MachineGUID = key.GetValue("MachineGuid").ToString();
-                    Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
+                    AccountInfo.Current.MachineGUID = key.GetValue("MachineGuid").ToString();
+                    AccountInfo.Current.IsMachineGUIDEnabled = true;
                     key.Close();
                 }
             }
             else
             {
-                Settings.Current.AccountInfo.IsMachineGUIDEnabled = false;
-                Settings.Current.AccountInfo.MachineGUID = null;
+                AccountInfo.Current.IsMachineGUIDEnabled = false;
+                AccountInfo.Current.MachineGUID = null;
             }
             var result = await Services.UpdateRecoveryOptions();
+            if (result == null)
+            {
+                return;
+            }
             if (result.IsSuccessStatusCode)
             {
                 MessageBox.Show("Account recovery options have been updated.", "Update Successful", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                var accountBackup = JsonHelper.Decode<AccountInfo>(strAccountBackup);
-                Settings.Current.AccountInfo.IsEmailEnabled = accountBackup.IsEmailEnabled;
-                Settings.Current.AccountInfo.Email = accountBackup.Email;
-                Settings.Current.AccountInfo.IsQuestionEnabled = accountBackup.IsQuestionEnabled;
-                Settings.Current.AccountInfo.ChallengeQuestion = accountBackup.ChallengeQuestion;
-                Settings.Current.AccountInfo.ChallengeResponse = accountBackup.ChallengeResponse;
-                Settings.Current.AccountInfo.IsMachineGUIDEnabled = accountBackup.IsMachineGUIDEnabled;
-                Settings.Current.AccountInfo.MachineGUID = accountBackup.MachineGUID;
+                var accountBackup = Json.Decode<AccountInfo>(strAccountBackup);
+                AccountInfo.Current.IsEmailEnabled = accountBackup.IsEmailEnabled;
+                AccountInfo.Current.Email = accountBackup.Email;
+                AccountInfo.Current.IsQuestionEnabled = accountBackup.IsQuestionEnabled;
+                AccountInfo.Current.ChallengeQuestion = accountBackup.ChallengeQuestion;
+                AccountInfo.Current.ChallengeResponse = accountBackup.ChallengeResponse;
+                AccountInfo.Current.IsMachineGUIDEnabled = accountBackup.IsMachineGUIDEnabled;
+                AccountInfo.Current.MachineGUID = accountBackup.MachineGUID;
                 MessageBox.Show("The update failed.  Unknown error.  Please try again or send a bug report.", "Update Failed", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             Settings.Current.Save();
@@ -121,7 +146,7 @@ namespace Game_Cloud.Windows
                 MessageBox.Show("The supplied passwords don't match.", "Passwords Don't Match", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
-            var hashedPassword = HashHelper.HashString(passNewPassword.Password);
+            var hashedPassword = Crypto.Hash(passNewPassword.Password);
             var result = await Services.ChangePassword(hashedPassword);
             if (result.IsSuccessStatusCode)
             {
@@ -130,7 +155,6 @@ namespace Game_Cloud.Windows
                     MessageBox.Show("Your stored current password is incorrect.  Log out and back in, then try again.", "Incorrect Password", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                Settings.Current.AccountInfo.Password = passNewPassword.Password;
                 Settings.Current.Save();
                 passNewPassword.Clear();
                 passConfirmPassword.Clear();
@@ -148,7 +172,7 @@ namespace Game_Cloud.Windows
             RegistryKey regKeyBase = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
             var key = regKeyBase.OpenSubKey(@"Software\Microsoft\Cryptography", RegistryKeyPermissionCheck.ReadSubTree, System.Security.AccessControl.RegistryRights.ReadKey);
             var value = key.GetValue("MachineGuid").ToString();
-            Settings.Current.AccountInfo.IsMachineGUIDEnabled = true;
+            AccountInfo.Current.IsMachineGUIDEnabled = true;
             key.Close();
             regKeyBase.Close();
             if (value == null)

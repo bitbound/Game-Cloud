@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game_Cloud"
-        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Game_Cloud.MainWindow"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" xmlns:Models="clr-namespace:Game_Cloud.Models" x:Class="Game_Cloud.MainWindow"
         mc:Ignorable="d"
-        Title="Game Cloud" Height="400" Width="350" MinHeight="400" MinWidth="350" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded" Icon="Assets/GameCloud.png" Activated="Window_Activated">
+        Title="Game Cloud" Height="400" MinHeight="400" Width="350" MinWidth="350" MouseLeftButtonDown="Window_MouseLeftButtonDown" Loaded="Window_Loaded" Icon="Assets/GameCloud.png" Activated="Window_Activated">
     <Window.DataContext>
-        <local:Settings/>
+        <Models:AccountInfo/>
     </Window.DataContext>
     <Grid x:Name="gridMain">
         <Button x:Name="buttonMenu" Width="25" Height="25"  VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,10,0" BorderBrush="{x:Null}" Click="buttonMenu_Click">
@@ -16,22 +16,27 @@
                 <ContextMenu HasDropShadow="True">
                     <MenuItem x:Name="menuUpdates" Header="Check for Updates" Click="menuUpdates_Click">
                         <MenuItem.Icon>
-                            <Image Source="Assets/Download_grey_inverse_48x.png" Width="20"></Image>
+                            <Image Source="Assets/Download_grey_inverse_48x.png" Width="20"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="menuAccount" Header="Account Settings" Click="menuAccount_Click" IsEnabled="False">
                         <MenuItem.Icon>
-                            <Image Source="Assets/User_48x.png" Width="20"></Image>
+                            <Image Source="Assets/User_48x.png" Width="20"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="menuOptions" Header="Options" Click="menuOptions_Click">
+                    <MenuItem x:Name="menuOptions" Header="Options" Click="menuOptions_Click" IsEnabled="False">
                         <MenuItem.Icon>
-                            <Image Source="Assets/Settings_48x.png" Width="20"></Image>
+                            <Image Source="Assets/Settings_48x.png" Width="20"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem x:Name="menuWelcome" Header="Show Welcome" Click="menuWelcome_Click">
+                        <MenuItem.Icon>
+                            <Image Source="Assets/Question_32xLG.png" Width="20"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="menuAbout" Header="About" Click="menuAbout_Click">
                         <MenuItem.Icon>
-                            <Image Source="Assets/UIAboutBox_64x.png" Width="20"></Image>
+                            <Image Source="Assets/UIAboutBox_64x.png" Width="20"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -64,39 +69,41 @@
         </Grid>
         <Grid x:Name="gridAccountInfo" Margin="10, 10, 0, 0" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <TextBlock FontSize="16"  Text="Logged in as: "></TextBlock>
-                <TextBlock x:Name="textLoggedInName" FontSize="16" FontWeight="Bold" Text="{Binding AccountInfo.AccountName}"></TextBlock>
-                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center">
-                        <Hyperlink x:Name="hyperLogOut" Click="hyperLogOut_Click">Log Out</Hyperlink>
-                </TextBlock>
+                <TextBlock FontSize="16"  Text="Logged in as: "/>
+                <TextBlock x:Name="textLoggedInName" FontSize="16" FontWeight="Bold" Text="{Binding AccountName}"/>
+                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center"><Hyperlink x:Name="hyperLogOut" Click="hyperLogOut_Click"><Run Text="Log Out"/></Hyperlink></TextBlock>
             </StackPanel>
             <StackPanel x:Name="stackStorage" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,36,0,0">
-                <TextBlock Text="Cloud Storage: "></TextBlock>
-                <TextBlock x:Name="textStorageUsed" Text="{Binding AccountInfo.StorageUsed, StringFormat=\{0:N0\}}"/>
-                <TextBlock Text=" / "></TextBlock>
-                <TextBlock x:Name="textStorageTotal" Text="{Binding AccountInfo.StorageTotal, StringFormat=\{0:N0\}}"></TextBlock>
-                <TextBlock Text=" MB"></TextBlock>
+                <TextBlock Text="Cloud Storage: "/>
+                <TextBlock x:Name="textStorageUsed" Text="{Binding StorageUsed, StringFormat=\{0:N0\}}"/>
+                <TextBlock Text=" / "/>
+                <TextBlock x:Name="textStorageTotal" Text="{Binding StorageTotal, StringFormat=\{0:N0\}}"/>
+                <TextBlock Text=" MB"/>
             </StackPanel>
-            <ProgressBar x:Name="progressStorage" Height="10" Margin="0,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=stackStorage, Mode=OneWay}" ValueChanged="progressStorage_ValueChanged" Value="{Binding AccountInfo.StoragePercentage}"/>
-            <TextBlock x:Name="textDonate" Margin="0,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" FontSize="10">
-                        <Hyperlink x:Name="hyperDonate" Click="hyperDonate_Click">Donations are appreciated!</Hyperlink>
-            </TextBlock>
+            <ProgressBar x:Name="progressStorage" Height="10" Margin="0,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=stackStorage, Mode=OneWay}" ValueChanged="progressStorage_ValueChanged" Value="{Binding StoragePercentage}"/>
+            <TextBlock x:Name="textDonate" Margin="0,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" FontSize="10"><Hyperlink x:Name="hyperDonate" Click="hyperDonate_Click"><Run Text="Donations are appreciated!"/></Hyperlink></TextBlock>
         </Grid>
         <TextBlock x:Name="textStatus" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" MaxWidth="275" Foreground="Green" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,100,15,0" TextWrapping="Wrap"/>
         <Grid x:Name="gridLogIn" Margin="10, 100, 10, 10">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0" >
+            <StackPanel x:Name="stackLogin" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,40,0,0"  Visibility="Visible">
                 <TextBlock Text="User Name:" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Width="150"/>
                 <TextBox x:Name="textAccountName" GotFocus="textUsername_GotFocus" LostFocus="textUsername_LostFocus" Width="150"/>
                 <TextBlock Text="Password:" Margin="0,5,0,0" Width="150" FontSize="14" FontWeight="Bold"/>
                 <PasswordBox x:Name="passPassword" GotFocus="textUsername_GotFocus" LostFocus="textUsername_LostFocus" Width="150"/>
-                <CheckBox x:Name="checkRememberAccount" GotFocus="textUsername_GotFocus" LostFocus="textUsername_LostFocus" Margin="2,5,0,0" Unchecked="checkRememberAccount_Unchecked" Checked="checkRememberAccount_Checked">Remember Account</CheckBox>
+                <CheckBox x:Name="checkRememberAccount" GotFocus="textUsername_GotFocus" LostFocus="textUsername_LostFocus" Margin="2,5,0,0" Unchecked="checkRememberAccount_Unchecked" Checked="checkRememberAccount_Checked" Content="Remember Account"/>
                 <Button x:Name="buttonLogIn" Content="Log In" Width="60" Height="30" Margin="0,10,0,0" HorizontalAlignment="Right" Click="buttonLogIn_Click" />
-                <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0">
-                        <Hyperlink x:Name="hyperForgotPassword" Click="hyperForgotPassword_Click">Forgot your password?</Hyperlink>
-                </TextBlock>
-                <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0">
-                        <Hyperlink x:Name="hyperSignUp" Click="hyperSignUp_Click">No account?  Sign up for free!</Hyperlink>
-                </TextBlock>
+                <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0"><Hyperlink x:Name="hyperForgotPassword" Click="hyperForgotPassword_Click"><Run Text="Forgot your password?"/></Hyperlink></TextBlock>
+                <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0"><Hyperlink x:Name="hyperSignUp" Click="hyperSignUp_Click"><Run Text="No account? Sign up for free!"/></Hyperlink></TextBlock>
+            </StackPanel>
+            <StackPanel x:Name="stackNewPassword" Visibility="Collapsed" HorizontalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="0,25,0,10"><Run Text="New Password Required"/></TextBlock>
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="New Password:" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Width="150"/>
+                    <PasswordBox x:Name="passNewPassword" GotFocus="passNewPassword_GotFocus" LostFocus="passNewPassword_LostFocus" Width="150"/>
+                    <TextBlock Text="Confirm Password:" Margin="0,5,0,0" Width="150" FontSize="14" FontWeight="Bold"/>
+                    <PasswordBox x:Name="passConfirmPassword" GotFocus="passNewPassword_GotFocus" LostFocus="passNewPassword_LostFocus" Width="150"/>
+                    <Button x:Name="buttonSubmitNewPassword" Content="Submit" Width="60" Height="30" Margin="0,10,0,0" HorizontalAlignment="Right" Click="buttonSubmitNewPassword_Click" />
+                </StackPanel>
             </StackPanel>
         </Grid>
         <Grid x:Name="gridNewAccount" Margin="10, 110, 10, 10" Visibility="Collapsed">
@@ -110,14 +117,10 @@
                 <Button x:Name="buttonCreateAccount" Content="Create" Margin="0,10,0,0" Width="80" Height="30" Click="buttonCreateAccount_Click" />
                 <Button x:Name="buttonCancelCreate" Content="Cancel" Margin="0,10,0,0" Width="80" Height="30" Click="buttonCancelCreate_Click"  />
                 <CheckBox x:Name="checkLicense" FontSize="10" Margin="0,10,0,0">
-                    <TextBlock>
-                        <Run>I agree to the </Run>
-                        <Hyperlink x:Name="hyperLicense" Click="hyperLicense_Click">license terms.</Hyperlink>
-                    </TextBlock> 
+                    <TextBlock><Run Text="I agree to the"/><Run Text=" "/><Hyperlink x:Name="hyperLicense" Click="hyperLicense_Click"><Run Text="license terms."/></Hyperlink></TextBlock>
                 </CheckBox>
             </StackPanel>
         </Grid>
-
         <Grid x:Name="gridGames" Margin="10, 140, 10, 10" Visibility="Collapsed">
             <TabControl x:Name="tabMain" VerticalAlignment="Stretch" SelectionChanged="tabMain_SelectionChanged">
                 <TabItem Header="Synced Games" Height="30">
@@ -128,14 +131,17 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding AccountInfo.Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke">
+                        <DataGrid x:Name="dataSyncedGames" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ColumnWidth="Auto" Margin="10,10,75.4,10.2" AutoGenerateColumns="False" ItemsSource="{Binding Games}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
                                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Platform" Binding="{Binding Platform}"/>
                                 <DataGridTextColumn Header="Storage Used (MB)" Binding="{Binding StorageUse}"/>
                                 <DataGridTextColumn Header="Local Path" Binding="{Binding Path}"/>
                                 <DataGridTextColumn Header="Last Synced (Local)" Binding="{Binding LastLocalSync}"/>
                                 <DataGridTextColumn Header="Last Synced (Remote)" Binding="{Binding LastServerSync}"/>
+                                <DataGridTextColumn Header="File Filter Type" Binding="{Binding FileFilterOperator}"/>
+                                <DataGridTextColumn Header="File Filter Pattern" Binding="{Binding FileFilterPattern}"/>
                             </DataGrid.Columns>
                             <DataGrid.RowDetailsTemplate>
                                 <DataTemplate>
@@ -144,34 +150,34 @@
                             </DataGrid.RowDetailsTemplate>
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Name="menuOpenFolder" Header="Open Folder" ToolTip="Opens the save folder in Windows Explorer." Click="menuOpenFolder_Click"></MenuItem>
-                                    <MenuItem Name="menuForceUpdate" Header="Force Update" ToolTip="Forces the current local files to replace the server's." Click="menuForceUpdate_Click"></MenuItem>
+                                    <MenuItem x:Name="menuOpenFolder" Header="Open Folder" ToolTip="Opens the save folder in Windows Explorer." Click="menuOpenFolder_Click"/>
+                                    <MenuItem x:Name="menuForceUpdate" Header="Force Update" ToolTip="Forces the current local files to replace the server's." Click="menuForceUpdate_Click"/>
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                         </DataGrid>
-                        <StackPanel x:Name="stackNoGames" Height="125" Width="250" Margin="0,0,30,0"  VerticalAlignment="Center" HorizontalAlignment="Center" Background="#BFFFFFFF" Visibility="Collapsed">
-                            <TextBlock Text="You have no games synced yet." Margin="0,40,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14"/>
-                            <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0">
-                            <Hyperlink x:Name="hyperGoToAdd" Click="hyperGoToAdd_Click">Click here to add one!</Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
+
                         <Button x:Name="buttonSync" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,10,10.4,0" Height="42" VerticalAlignment="Top" Width="60" Click="buttonSync_Click">
                             <TextBlock TextAlignment="Center"><Run Text="Sync"/><LineBreak/><Run Text="Selected"/></TextBlock>
                         </Button>
                         <Button x:Name="buttonImport" Content="Import" HorizontalAlignment="Right" Margin="0,0,10,70" Height="25" VerticalAlignment="Bottom" Width="60" ToolTipService.ShowDuration="999999" Click="buttonImport_Click">
                             <Button.ToolTip>
-                                <TextBlock Text="Import a list of synced games to your account.  You can only import lists that were exported using Game Cloud." MaxWidth="400" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="Import a list of synced games to your account.  You can only import lists that were exported using Game Cloud." MaxWidth="400" TextWrapping="Wrap"/>
                             </Button.ToolTip>
                         </Button>
                         <Button x:Name="buttonExport" Content="Export" HorizontalAlignment="Right" Margin="0,0,10,40" Height="25" VerticalAlignment="Bottom" Width="60" ToolTipService.ShowDuration="999999" Click="buttonExport_Click">
                             <Button.ToolTip>
-                                <TextBlock Text="Export your synced games list to a file." MaxWidth="400" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="Export your synced games list to a file." MaxWidth="400" TextWrapping="Wrap"/>
                             </Button.ToolTip>
                         </Button>
-                        <Button x:Name="buttonRemove" Content="Remove" HorizontalAlignment="Right" Margin="0,0,10,10"  Height="25" VerticalAlignment="Bottom" Width="60" Click="buttonRemove_Click"/>
+                        <Button x:Name="buttonRemove" Content="Remove" HorizontalAlignment="Right" Margin="0,0,10,10"  Height="25" VerticalAlignment="Bottom" Width="60" ToolTipService.ShowDuration="999999" Click="buttonRemove_Click">
+                            <Button.ToolTip>
+                                <TextBlock Text="Remove the game from your synced games list." MaxWidth="400" TextWrapping="Wrap"/>
+                            </Button.ToolTip>
+                        </Button>
+
                     </Grid>
                 </TabItem>
-                <TabItem Header="Add Known Game" Height="30">
+                <TabItem Header="Game Database" Height="30">
                     <TabItem.Background>
                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                             <GradientStop Color="#FFDFF4F7" Offset="0"/>
@@ -182,22 +188,19 @@
                         <TextBlock Text="Known Games" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0" />
                         <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="95,10,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
                             <Image.ToolTip>
-                                <TextBlock Text="Known games already have their default save file paths figured out.  They're stored in a database on the Game Cloud server.  If you have one of these games installed, you can add it to your sync list without having to look for the folder that contains the save files.  The community can contribute to and rate the entries, and it will be removed if the overall rating goes below 0." MaxWidth="400" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="Known games already have their default save file paths figured out.  The information about their save files is stored in a database on the Game Cloud server.  If you have one of these games installed, you can add it to your sync list without having to look for the folder that contains the save files.  The community can contribute to and rate the entries, and they will be removed if the overall rating goes below 0." MaxWidth="400" TextWrapping="Wrap"/>
                             </Image.ToolTip>
                         </Image>
                         <TextBlock Text="Details" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="200,10,0,0" />
                         <ComboBox x:Name="comboKnownGames" VerticalAlignment="Top" HorizontalAlignment="Left" MinWidth="150" MaxWidth="150" Foreground="Gray" Margin="10,31,0,0" ItemsSource="{Binding KnownGames}" SelectionChanged="comboKnownGames_SelectionChanged" IsEditable="True" Text="Filter..." GotFocus="comboKnownGames_GotFocus" LostFocus="comboKnownGames_LostFocus">
                             <ComboBox.DataContext>
-                                <local:SettingsTemp/>
+                                <local:Temp/>
                             </ComboBox.DataContext>
                         </ComboBox>
-                        <CheckBox x:Name="checkFilterInstalledGames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,55,0,0" Content="Only show installed games" FontSize="10" Checked="checkFilterInstalledGames_Checked" Unchecked="checkFilterInstalledGames_Unchecked">
-                        </CheckBox>
-                        <Button x:Name="buttonAddGame" Content=" Add Game " Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,90,0,0" Click="buttonAddGame_Click" />
+                        <CheckBox x:Name="checkFilterInstalledGames" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,55,0,0" Content="Only show installed games" FontSize="10" Checked="checkFilterInstalledGames_Checked" Unchecked="checkFilterInstalledGames_Unchecked"/>
+                        <Button x:Name="buttonAddGame" Content=" Add Game " FontWeight="Bold" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,90,0,0" Click="buttonAddGame_Click" />
                         <TextBlock Margin="10,0,0,30" Text="Don't see your game?" VerticalAlignment="Bottom"/>
-                        <TextBlock Margin="10,0,0,10" VerticalAlignment="Bottom">
-                            <Hyperlink x:Name="hyperGoToCustom" Click="hyperGoToCustom_Click">Click here to add it!</Hyperlink>
-                        </TextBlock>
+                        <TextBlock Margin="10,0,0,10" VerticalAlignment="Bottom"><Hyperlink x:Name="hyperGoToCustom" Click="hyperGoToCustom_Click"><Run Text="Click here to add it!"/></Hyperlink></TextBlock>
 
                         <Border BorderBrush="Gray" BorderThickness="1" Margin="200,31,10,10" CornerRadius="5">
                             <Grid Margin="5">
@@ -210,35 +213,37 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Margin="0,0,0,5" Text="Name:"></TextBlock>
-                                    <TextBlock Margin="0,0,0,5" Text="Path:"></TextBlock>
-                                    <TextBlock Margin="0,0,0,5" Text="Overall Rating:"></TextBlock>
-                                    <TextBlock Text="Total Votes:"></TextBlock>
+                                    <TextBlock Margin="0,0,0,5" Text="Name:"/>
+                                    <TextBlock Margin="0,0,0,5" Text="Platform:"/>
+                                    <TextBlock Margin="0,0,0,5" Text="Path:"/>
+                                    <TextBlock Margin="0,0,0,5" Text="Filter Type:" />
+                                    <TextBlock Margin="0,0,0,5" Text="Filter Pattern:" />
+                                    <TextBlock Margin="0,0,0,5" Text="Overall Rating:"/>
+                                    <TextBlock Text="Total Votes:"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.Name, ElementName=comboKnownGames}"></TextBlock>
-                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.Path, ElementName=comboKnownGames}"></TextBlock>
-                                    <TextBlock x:Name="textOverallRating" Margin="0,0,0,5" Text="{Binding SelectedItem.OverallRating, ElementName=comboKnownGames}"></TextBlock>
-                                    <TextBlock x:Name="textTotalVotes" Text="{Binding SelectedItem.TotalVotes, ElementName=comboKnownGames}"></TextBlock>
+                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.Name, ElementName=comboKnownGames}"/>
+                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.Platform, ElementName=comboKnownGames}"/>
+                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.Path, ElementName=comboKnownGames}"/>
+                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.FileFilterOperator, ElementName=comboKnownGames}"/>
+                                    <TextBlock Margin="0,0,0,5" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Text="{Binding SelectedItem.FileFilterPattern, ElementName=comboKnownGames}"/>
+                                    <TextBlock x:Name="textOverallRating" Margin="0,0,0,5" Text="{Binding SelectedItem.OverallRating, ElementName=comboKnownGames}"/>
+                                    <TextBlock x:Name="textTotalVotes" Text="{Binding SelectedItem.TotalVotes, ElementName=comboKnownGames}"/>
                                 </StackPanel>
                                 <Grid Grid.ColumnSpan="2" Grid.Row="1">
-                                    <TextBlock Text="Your Vote:"></TextBlock>
+                                    <TextBlock Text="Your Vote:"/>
                                     <ToggleButton x:Name="toggleRateUp" Margin="0,0,50,0"  Height="25" Width="25" HorizontalAlignment="Right" VerticalAlignment="Center" BorderBrush="{x:Null}" Background="WhiteSmoke" ToolTip="Rate up!  :)" Click="toggleRateUp_Click">
-                                        <ToggleButton.Content>
-                                            <Image Source="Assets/thumb-up.png"></Image>
-                                        </ToggleButton.Content>
+                                        <Image Source="Assets/thumb-up.png"/>
                                     </ToggleButton>
                                     <ToggleButton x:Name="toggleRateDown"  Height="25" Width="25" HorizontalAlignment="Right" VerticalAlignment="Center" BorderBrush="{x:Null}" Background="WhiteSmoke" ToolTip="Rate down.  :(  Games with ratings below 0 will be removed."  Click="toggleRateDown_Click">
-                                        <ToggleButton.Content>
-                                            <Image Source="Assets/thumb-down.png"></Image>
-                                        </ToggleButton.Content>
+                                        <Image Source="Assets/thumb-down.png"/>
                                     </ToggleButton>
                                 </Grid>
                             </Grid>
                         </Border>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Add Other Game" Height="30">
+                <TabItem Header="New Game" Height="30">
                     <TabItem.Background>
                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                             <GradientStop Color="#FFDFF4F7" Offset="0"/>
@@ -246,18 +251,171 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <TextBlock Text="Game's Save Folder" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                        <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="120,10,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
+                        <TextBlock Text="Game Name" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="81,10,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
                             <Image.ToolTip>
-                                <TextBlock Text="Enter the folder path where the game's save files are stored.  If you don't know, you can Bing/Google it.  Keep the 'Submit to database' box checked to add the path to Game Cloud's online database so others can benefit from your efforts!" MaxWidth="400" TextWrapping="Wrap"></TextBlock>
+                                <TextBlock Text="This is the title of the game.  The platform will be appended to the game name, so you don't need to specify it here." MaxWidth="400" TextWrapping="Wrap"/>
                             </Image.ToolTip>
                         </Image>
-                        <TextBox x:Name="textCustomPath" VerticalAlignment="Top" Margin="10,31,80,0"  ToolTip="Type or paste a path, or click Browse." />
-                        <Button x:Name="buttonBrowseCustom" Content=" Browse " Height="25" VerticalAlignment="Top" Margin="0,31,15,0" HorizontalAlignment="Right" Click="buttonBrowseCustom_Click"/>
-                        <TextBlock Text="Game Name" Margin="10,58,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="textCustomName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,79,0,0" Width="200" />
-                        <Button x:Name="buttonAddCustom" Content=" Add Game " Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,106,0,0" Click="buttonAddCustom_Click"/>
-                        <CheckBox x:Name="checkSubmitToDatabase" Margin="90,109,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTip="Add this game's save path to the Game Cloud database." IsChecked="True" Content="Submit to database."></CheckBox>
+                        <TextBox x:Name="textCustomName" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,29,0,0" Width="200" />
+                        <TextBlock Text="Platform" Margin="273,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="323,10,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
+                            <Image.ToolTip>
+                                <TextBlock Text="The platform is used to identify the version of the game, such as the digital store that distributed it.  This is important since it might change where the game files are saved.  For example, Steam save files may differ from the original CD/DVD version.  If the platform isn't listed, you can type it in." MaxWidth="400" TextWrapping="Wrap"/>
+                            </Image.ToolTip>
+                        </Image>
+                        <ComboBox x:Name="comboPlatform" Margin="273,29,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsEditable="True" Width="205">
+                            <ComboBoxItem Content="Steam"></ComboBoxItem>
+                            <ComboBoxItem Content="Good Old Games"></ComboBoxItem>
+                            <ComboBoxItem Content="Original CD/DVD/Direct"></ComboBoxItem>
+                            <ComboBoxItem Content="Origin"></ComboBoxItem>
+                            <ComboBoxItem Content="ScummVM"></ComboBoxItem>
+                            <ComboBoxItem Content="DotEmu"></ComboBoxItem>
+                            <ComboBoxItem Content="Abandonware"></ComboBoxItem>
+                            <ComboBoxItem Content="D-Fend Reloaded"></ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Text="Game's Save Folder" Margin="10,55,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="118,55,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
+                            <Image.ToolTip>
+                                <TextBlock Text="Enter the folder path where the game's save files are stored.  If you don't know, you can Bing/Google it.  Keep the 'Submit to database' box checked to add the path to Game Cloud's online database so others can benefit from your efforts!" MaxWidth="400" TextWrapping="Wrap"/>
+                            </Image.ToolTip>
+                        </Image>
+                        <TextBox x:Name="textCustomPath" VerticalAlignment="Top" Margin="10,76,80,0"  ToolTip="Type or paste the path here, or click Browse." LostFocus="textCustomPath_LostFocus" Text="Type or paste the path here, or click Browse." Foreground="Gray" GotFocus="textCustomPath_GotFocus" />
+                        <Button x:Name="buttonBrowseCustom" Content=" Browse " Height="25" VerticalAlignment="Top" Margin="0,72,15,0" HorizontalAlignment="Right" Click="buttonBrowseCustom_Click"/>
+                        <TextBlock Text="File Filter (optional)" Margin="10,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                        <StackPanel Orientation="Horizontal" Margin="10,128,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                            <ComboBox x:Name="comboFilter" SelectedIndex="0">
+                                <ComboBoxItem Content=""></ComboBoxItem>
+                                <ComboBoxItem Content="Only include"></ComboBoxItem>
+                                <ComboBoxItem Content="Exclude all"></ComboBoxItem>
+                            </ComboBox>
+                            <TextBlock Margin="15,0,15,0" Text="file names that contain" />
+                            <TextBox x:Name="textFilter" Width="225"></TextBox>
+                        </StackPanel>
+                        <Image Height="14" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="117,107,0,0" Source="Assets/StatusHelp_cyan_48x.png" ToolTipService.ShowDuration="999999">
+                            <Image.ToolTip>
+                                <TextBlock Text="Use the file filter to specify which files within the save folder are included or excluded.  The filter looks at the file name and the extension (e.g. save01.dat).  This is helpful if the save files are mixed with other non-essential files.  By default, all files will be included." MaxWidth="400" TextWrapping="Wrap"/>
+                            </Image.ToolTip>
+                        </Image>
+                        <Button x:Name="buttonAddCustom" Content=" Add Game " HorizontalAlignment="Left" Margin="10,0,0,10" Click="buttonAddCustom_Click" Height="35" VerticalAlignment="Bottom" FontWeight="Bold" />
+                        <CheckBox x:Name="checkSubmitToDatabase" Margin="90,0,0,25" HorizontalAlignment="Left" ToolTip="Add this game's save path to the Game Cloud database." IsChecked="True" Content="Submit to database." VerticalAlignment="Bottom"/>
+                        <TextBlock x:Name="textPathNotSystemRoot" Text="The save folder is not on the system drive and cannot be added to the database." HorizontalAlignment="Left" Margin="90,0,0,10" Foreground="Red" FontSize="10" Visibility="Collapsed" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Height="30">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Ask for Help"></TextBlock>
+                            <Border x:Name="borderHelpRequestsAvailable" Margin="7,0,0,0" CornerRadius="50" Background="IndianRed" Padding="5,0,5,0" Visibility="Collapsed">
+                                <TextBlock x:Name="textHelpRequestsAvailable" FontWeight="Bold"></TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </TabItem.Header>
+                    <TabItem.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="WhiteSmoke" Offset="0"/>
+                            <GradientStop Color="LightSteelBlue" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TabItem.Background>
+                    <Grid>
+                        <Border HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,10,0,0" Padding="10" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="radioAskQuestion" Content="Ask a Question" Margin="0,0,20,0" IsChecked="True" Checked="radioAskQuestion_Checked"></RadioButton>
+                                <RadioButton x:Name="radioViewQuestions" Content="View Questions" Checked="radioViewQuestions_Checked"></RadioButton>
+                            </StackPanel>
+                        </Border>
+                        <Border x:Name="borderAskQuestion" Margin="10,65,10,10" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+                            <Grid>
+                                <TextBlock TextWrapping="Wrap" Text="Subject" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+                                <TextBox x:Name="textAskSubject" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Margin="10,31,0,0"></TextBox>
+                                <TextBlock TextWrapping="Wrap" Text="Message" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,65,0,0"/>
+                                <TextBox x:Name="textAskMessage" Margin="10,86,65,10" AcceptsReturn="True"/>
+                                <Button x:Name="buttonSendQuestion" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="50" Height="30" Click="buttonSendQuestion_Click"/>
+                                <CheckBox x:Name="checkAskEmailNotification" Content="Email replies to me." Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Checked="checkAskEmailNotification_Checked"/>
+                            </Grid>
+
+                        </Border>
+                        <Border x:Name="borderViewQuestions" BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Margin="10,65,10,10" Visibility="Collapsed">
+                            <Grid>
+                                <Button x:Name="buttonAnswerQuestion" Content="Answer" FontWeight="Bold" HorizontalAlignment="Right" Width="55" Height="30" VerticalAlignment="Top" Margin="0,10,10,0" Click="buttonAnswerQuestion_Click"></Button>
+                                <Button x:Name="buttonRefreshQuestions" Content="Refresh" HorizontalAlignment="Right" Width="55" Height="30" VerticalAlignment="Top" Margin="0,65,10,0" Click="buttonRefreshQuestions_Click"></Button>
+                                <DataGrid x:Name="dataQuestions" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,10,70,10" AutoGenerateColumns="False" ItemsSource="{Binding Questions}" IsReadOnly="True" AlternatingRowBackground="WhiteSmoke" SelectionMode="Single" ColumnWidth="Auto">
+                                    <DataGrid.DataContext>
+                                        <local:Temp/>
+                                    </DataGrid.DataContext>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Answered?" Binding="{Binding IsAnswered}" />
+                                        <DataGridTextColumn Header="Asked On" Binding="{Binding AskedOn}" />
+                                        <DataGridTextColumn Header="Asked By" Binding="{Binding Asker}"/>
+                                        <DataGridTextColumn Header="Subject" Binding="{Binding Subject}"/>
+                                    </DataGrid.Columns>
+                                    <DataGrid.RowDetailsTemplate>
+                                        <DataTemplate>
+                                            <ScrollViewer Margin="10" MaxHeight="150">
+                                                <StackPanel>
+                                                    <TextBlock Text="Question:" FontWeight="Bold" />
+                                                    <TextBlock Margin="10,0,0,0" Text="{Binding Message}"/>
+                                                    <TextBlock Text="Answer(s):" Margin="0,10,0,0" FontWeight="Bold"/>
+                                                    <TextBlock Margin="10,0,0,0" Text="{Binding Reply}"/>
+                                                </StackPanel>
+                                            </ScrollViewer>
+                                        </DataTemplate>
+                                    </DataGrid.RowDetailsTemplate>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+                <TabItem Height="30">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Chat" Padding="10,0,10,0"></TextBlock>
+                            <Border x:Name="borderNewChatMessage" Margin="7,0,0,0" CornerRadius="50" Background="IndianRed" Padding="5,0,5,0" Visibility="Collapsed">
+                                <TextBlock x:Name="textNewChatMessage" FontWeight="Bold">0</TextBlock>
+                            </Border>
+                        </StackPanel>
+                    </TabItem.Header>
+                    <TabItem.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="WhiteSmoke" Offset="0"/>
+                            <GradientStop Color="LightSteelBlue" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TabItem.Background>
+                    <Grid>
+                        <Border BorderBrush="Gray" BorderThickness="1" Margin="10,10,10,50">
+                            <Grid>
+                                <ScrollViewer x:Name="scrollChat" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" Margin="10,0,100,10">
+                                    <TextBlock x:Name="textChatWindow" TextWrapping="Wrap">
+                                        <TextBlock FontWeight="Bold" TextWrapping="Wrap">
+                                            Welcome to Game Cloud chat!  Please be respectful.
+                                            <LineBreak/>
+                                            <TextBlock x:Name="textChatConnecting" FontWeight="Normal">
+                                                Connecting...
+                                            </TextBlock>
+                                        </TextBlock>
+                                        <LineBreak />
+                                    </TextBlock>
+                                </ScrollViewer>
+                                <Border HorizontalAlignment="Right" Width="100" BorderBrush="Gray" BorderThickness="1,0,0,0">
+                                    <Grid>
+                                        <TextBlock VerticalAlignment="Top" TextAlignment="Center" Margin="0,5,0,0">
+                                        Users
+                                        </TextBlock>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,30,0,0">
+                                            <ListBox x:Name="listChatUsers">
+
+                                            </ListBox>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                        </Border>
+                        <TextBox x:Name="textChatInput" Margin="10,0,125,10" TextWrapping="Wrap" VerticalAlignment="Bottom" FontSize="14" GotFocus="textChatInput_GotFocus" LostFocus="textChatInput_LostFocus"/>
+                        <Button x:Name="buttonChatSend" Content="Send" HorizontalAlignment="Right" Margin="0,0,45,10" VerticalAlignment="Bottom" Width="60" Click="buttonChatSend_Click"/>
+                        <Button x:Name="buttonChatUpload" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="20" Height="20" Margin="0,0,10,10" ToolTip="Upload and share a file." Click="buttonChatUpload_Click">
+                            <Image Source="Assets/Upload_gray_inverse_32x.png"></Image>
+                        </Button>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Feedback" Height="30">
@@ -272,9 +430,9 @@
                             <ColumnDefinition />
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">Questions? Suggestions?</TextBlock>
+                        <TextBlock Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100"><Run Text="Questions? Suggestions?"/></TextBlock>
                         <Button x:Name="buttonEmailMe" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Email Me " Width="100" Height="50" Click="buttonEmailMe_Click"/>
-                        <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">Found a bug?</TextBlock>
+                        <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100"><Run Text="Found a bug?"/></TextBlock>
                         <Button x:Name="buttonReportBug" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Content=" Report Bug " Width="100" Height="50" Click="buttonReportBug_Click"/>
                     </Grid>
                 </TabItem>

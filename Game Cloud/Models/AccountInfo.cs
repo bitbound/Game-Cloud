@@ -11,6 +11,7 @@ namespace Game_Cloud.Models
 {
     public class AccountInfo : INotifyPropertyChanged
     {
+        public static AccountInfo Current { get; set; } = new AccountInfo();
         public AccountInfo()
         {
         }
@@ -97,6 +98,7 @@ namespace Game_Cloud.Models
                 games = value;
             }
         }
+        public bool ReadTutorial { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public void FirePropertyChanged(string PropertyName)
         {

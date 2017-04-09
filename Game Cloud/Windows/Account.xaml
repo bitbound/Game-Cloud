@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game_Cloud.Windows"
-        xmlns:Game_Cloud="clr-namespace:Game_Cloud" x:Class="Game_Cloud.Windows.Account"
+        xmlns:Game_Cloud="clr-namespace:Game_Cloud" xmlns:Models="clr-namespace:Game_Cloud.Models" x:Class="Game_Cloud.Windows.Account"
         mc:Ignorable="d"
         Title="Game Cloud Account Settings" Height="400" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
     <Window.DataContext>
-        <Game_Cloud:Settings/>
+        <Models:AccountInfo/>
     </Window.DataContext>
     <Grid>
         <TextBlock Text="Account Settings" FontSize="20" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10, 10, 0,0"/>
@@ -22,9 +22,12 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <TextBlock Margin="0,5,20,0" Text="Account Name:" VerticalAlignment="Bottom"/>
+                        <TextBlock Margin="0,10,20,0" Text="Email:"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <TextBlock x:Name="textAccountName" Margin="0,5,20,0" VerticalAlignment="Bottom" Text="{Binding AccountInfo.AccountName}" />
+                        <TextBlock x:Name="textAccountName" Margin="0,5,20,0" VerticalAlignment="Bottom" Text="{Binding AccountName}" />
+                        <TextBox x:Name="textEmail" Margin="0,10,10,15" Text="{Binding Email}"/>
+                        <Button x:Name="buttonSaveEmail" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="50" Height="25" Click="buttonSaveEmail_Click">Save</Button>
                     </StackPanel>
                 </Grid>
                 <Expander Header="Password Change">
@@ -38,15 +41,13 @@
                 </Expander>
                 <Expander Header="Account Recovery Options">
                     <StackPanel>
-                        <CheckBox x:Name="checkMachineGuid" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Use this computer's GUID." IsChecked="{Binding AccountInfo.IsMachineGUIDEnabled}" Checked="checkMachineGuid_Checked" />
-                        <CheckBox x:Name="checkEmailReset" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Reset my password via email." IsChecked="{Binding AccountInfo.IsEmailEnabled}"/>
-                        <TextBlock Margin="10,0,10,5" Text="Email:" FontSize="10"/>
-                        <TextBox x:Name="textEmail" Margin="10,0,10,15" IsEnabled="{Binding IsChecked, ElementName=checkEmailReset}" Text="{Binding AccountInfo.Email}"/>
-                        <CheckBox x:Name="checkChallenge" Margin="10, 0, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Answer a challenge question." IsChecked="{Binding AccountInfo.IsQuestionEnabled}"/>
+                        <CheckBox x:Name="checkMachineGuid" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Use this computer's GUID." IsChecked="{Binding IsMachineGUIDEnabled}" Checked="checkMachineGuid_Checked" />
+                        <CheckBox x:Name="checkEmailReset" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Reset my password via email." IsChecked="{Binding IsEmailEnabled}"/>
+                        <CheckBox x:Name="checkChallenge" Margin="10, 10, 0, 5" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Answer a challenge question." IsChecked="{Binding IsQuestionEnabled}"/>
                         <TextBlock Margin="10,0,10,5" Text="Question:" FontSize="10"/>
-                        <TextBox x:Name="textQuestion" Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding AccountInfo.ChallengeQuestion}"/>
+                        <TextBox x:Name="textQuestion" Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding ChallengeQuestion}"/>
                         <TextBlock Margin="10,0,10,5" Text="Answer:" FontSize="10"/>
-                        <TextBox x:Name="textAnswer"  Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding AccountInfo.ChallengeResponse}"/>
+                        <TextBox x:Name="textAnswer"  Margin="10,0,10,5" IsEnabled="{Binding IsChecked, ElementName=checkChallenge}" Text="{Binding ChallengeResponse}"/>
                         <Button x:Name="buttonSaveRecovery" Margin="10,0,10,10" HorizontalAlignment="Right" Content="Save" Width="50" Height="25" Click="buttonSaveRecovery_Click"/>
                     </StackPanel>
                 </Expander>

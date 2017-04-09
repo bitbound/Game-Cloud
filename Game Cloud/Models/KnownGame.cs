@@ -10,11 +10,14 @@ namespace Game_Cloud.Models
     {
         public string Name { get; set; }
         public string Path { get; set; }
+        public string Platform { get; set; }
+        public string FileFilterOperator { get; set; }
+        public string FileFilterPattern { get; set; }
         public string ID
         {
             get
             {
-                return Name + Path;
+                return Name + Platform + Path;
             }
         }
         public List<string> PositiveRatings { get; set; } = new List<string>();
@@ -37,7 +40,7 @@ namespace Game_Cloud.Models
 
         public override string ToString()
         {
-            return Name;
+            return Name + " (" + Platform + ")";
         }
     }
 }
