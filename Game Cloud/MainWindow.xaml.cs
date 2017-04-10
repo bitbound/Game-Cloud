@@ -496,7 +496,7 @@ namespace Game_Cloud
                 if (Socket == null || (Socket.State != WebSocketState.Open && Socket.State != WebSocketState.Connecting))
                 {
                     Socket = SystemClientWebSocket.CreateClientWebSocket();
-                    await Socket.ConnectAsync(new Uri("wss://test.translucency.info/Services/GameCloud/Chat"), CancellationToken.None);
+                    await Socket.ConnectAsync(new Uri("wss://translucency.info/Services/GameCloud/Chat"), CancellationToken.None);
                     Socket_Handler.HandleSocket(Socket);
                     while (Socket.State != WebSocketState.Open)
                     {
