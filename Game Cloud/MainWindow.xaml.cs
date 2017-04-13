@@ -19,6 +19,7 @@ using System.Web.Helpers;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Windows.Documents;
 
 namespace Game_Cloud
 {
@@ -819,8 +820,19 @@ namespace Game_Cloud
             kg.PositiveRatings.RemoveAll(name => AccountInfo.Current.AccountName == name);
             if (toggleRateDown.IsChecked == true)
             {
-                kg.NegativeRatings.Add(AccountInfo.Current.AccountName);
-                toggleRateUp.IsChecked = false;
+                if (kg.OverallRating == 0)
+                {
+                    var diagResult = MessageBox.Show("Your vote will put the game at -1 rating, which will remove it from the database.  Do you wish to proceed?", "Confirm Removal", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (diagResult == MessageBoxResult.Yes)
+                    {
+                        kg.NegativeRatings.Add(AccountInfo.Current.AccountName);
+                        toggleRateUp.IsChecked = false;
+                    }
+                    else
+                    {
+                        toggleRateDown.IsChecked = false;
+                    }
+                }
             }
             if (kg.OverallRating < 0)
             {
@@ -864,7 +876,12 @@ namespace Game_Cloud
             {
                 if (textCustomName.Text.Contains(invalidChar))
                 {
-                    MessageBox.Show("The game name contains an invalid character.", "Invalid Character", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("The game name contains an invalid character.  Please remove any of the following characters: \\/:*?\"<>|", "Invalid Character", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (textFilter.Text.Contains(invalidChar))
+                {
+                    MessageBox.Show("The file filter contains an invalid character.  Please remove any of the following characters: \\/:*?\"<>|", "Invalid Character", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
@@ -1001,6 +1018,12 @@ namespace Game_Cloud
                 return;
             }
         }
+        private void hyperTutorial_Click(object sender, RoutedEventArgs e)
+        {
+            var welcome = new Welcome();
+            welcome.Owner = this;
+            welcome.ShowDialog();
+        }
         #endregion Tab - Ask for Help
 
         #region Tab - Chat
@@ -1034,6 +1057,14 @@ namespace Game_Cloud
             diag.ShowDialog();
             if (File.Exists(diag.FileName))
             {
+                var runUpload = new TextBlock()
+                {
+                    TextWrapping = TextWrapping.Wrap,
+                    Foreground = new SolidColorBrush(Colors.DarkCyan),
+                    Text = "Upload started.  It will appear here when it's finished."
+                };
+                textChatWindow.Inlines.Add(runUpload);
+                textChatWindow.Inlines.Add(new LineBreak());
                 var client = new WebClient();
                 var response = await client.UploadFileTaskAsync("https://translucency.info/Services/Downloader/", diag.FileName);
                 var strResponse = Encoding.UTF8.GetString(response);
@@ -1161,14 +1192,14 @@ namespace Game_Cloud
 
                     if (selectedGame.FileFilterOperator == "Only include")
                     {
-                        if (!localFile.Name.Contains(selectedGame.FileFilterPattern))
+                        if (!localFile.Name.ToLower().Contains(selectedGame.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }
                     }
                     else if (selectedGame.FileFilterOperator == "Exclude all")
                     {
-                        if (localFile.Name.Contains(selectedGame.FileFilterPattern))
+                        if (localFile.Name.ToLower().Contains(selectedGame.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }
@@ -1214,14 +1245,14 @@ namespace Game_Cloud
                 {
                     if (selectedGame.FileFilterOperator == "Only include")
                     {
-                        if (!fi.Name.Contains(selectedGame.FileFilterPattern))
+                        if (!fi.Name.ToLower().Contains(selectedGame.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }
                     }
                     else if (selectedGame.FileFilterOperator == "Exclude all")
                     {
-                        if (fi.Name.Contains(selectedGame.FileFilterPattern))
+                        if (fi.Name.ToLower().Contains(selectedGame.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }
@@ -1274,14 +1305,14 @@ namespace Game_Cloud
             {
                 if (ss.FileFilterOperator == "Only include")
                 {
-                    if (!fileInfo.Name.Contains(ss.FileFilterPattern))
+                    if (!fileInfo.Name.ToLower().Contains(ss.FileFilterPattern.ToLower()))
                     {
                         continue;
                     }
                 }
                 else if (ss.FileFilterOperator == "Exclude all")
                 {
-                    if (fileInfo.Name.Contains(ss.FileFilterPattern))
+                    if (fileInfo.Name.ToLower().Contains(ss.FileFilterPattern.ToLower()))
                     {
                         continue;
                     }
@@ -1510,14 +1541,14 @@ namespace Game_Cloud
                     var fi = new FileInfo(file);
                     if (game.FileFilterOperator == "Only include")
                     {
-                        if (!fi.Name.Contains(game.FileFilterPattern))
+                        if (!fi.Name.ToLower().Contains(game.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }
                     }
                     else if (game.FileFilterOperator == "Exclude all")
                     {
-                        if (fi.Name.Contains(game.FileFilterPattern))
+                        if (fi.Name.ToLower().Contains(game.FileFilterPattern.ToLower()))
                         {
                             continue;
                         }

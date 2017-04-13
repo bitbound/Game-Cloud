@@ -332,6 +332,9 @@
                                 <TextBox x:Name="textAskMessage" Margin="10,86,65,10" AcceptsReturn="True"/>
                                 <Button x:Name="buttonSendQuestion" Content="Send" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="50" Height="30" Click="buttonSendQuestion_Click"/>
                                 <CheckBox x:Name="checkAskEmailNotification" Content="Email replies to me." Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Checked="checkAskEmailNotification_Checked"/>
+                                <TextBlock Margin="0,35,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                    <Hyperlink x:Name="hyperTutorial" Click="hyperTutorial_Click" FontSize="10">Did you check the tutorial?</Hyperlink>
+                                </TextBlock>
                             </Grid>
 
                         </Border>
