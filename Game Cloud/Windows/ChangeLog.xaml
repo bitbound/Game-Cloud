@@ -13,6 +13,12 @@
             <StackPanel>
 
                 <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.1 "/>
+                    <Run Text=" April 19, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Fixed user name field field on the bug report form." TextWrapping="Wrap"></TextBlock>
+
+                <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.0 "/>
                     <Run Text=" April 13, 2017"/>
                 </TextBlock>
