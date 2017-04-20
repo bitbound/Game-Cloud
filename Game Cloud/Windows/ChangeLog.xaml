@@ -13,10 +13,16 @@
             <StackPanel>
 
                 <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.2 "/>
+                    <Run Text=" April 20, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Fixed a bug where an expired authentication token would incorrectly report incorrect user name or password." TextWrapping="Wrap"></TextBlock>
+                
+                <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.1 "/>
                     <Run Text=" April 19, 2017"/>
                 </TextBlock>
-                <TextBlock Margin="20,0,0,0" Text="- Fixed user name field field on the bug report form." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Fixed user name field on the bug report form." TextWrapping="Wrap"></TextBlock>
 
                 <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.0 "/>

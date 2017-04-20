@@ -1378,21 +1378,19 @@ namespace Game_Cloud
                 var strResponseCheckAccount = await responseCheckAccount.Content.ReadAsStringAsync();
                 if (strResponseCheckAccount == "false")
                 {
-                    if (String.IsNullOrWhiteSpace(AccountInfo.Current.AuthenticationCode) == false && Settings.Current.RememberAccount)
-                    {
-                        Utilities.ShowStatus("Authentication token expired.  Please log in again.", Colors.Red);
-                        passPassword.Password = "";
-                        return;
-                    }
-                    else
-                    {
-                        buttonLogIn.IsEnabled = true;
-                        passPassword.Password = "";
-                        Utilities.ShowStatus("Incorrect username or password.  Try again or create a new account.", Colors.Red);
-                        return;
-                    }
+                    Settings.Current.AuthenticationCode = "";
+                    passPassword.Password = "";
+                    Utilities.ShowStatus("Incorrect username or password.  Try again or create a new account.", Colors.Red);
+                    return;
                 }
-                if (strResponseCheckAccount.Contains("newpassword"))
+                else if (strResponseCheckAccount == "expired")
+                {
+                    Settings.Current.AuthenticationCode = "";
+                    Utilities.ShowStatus("Authentication token expired.  Please log in again.", Colors.Red);
+                    passPassword.Password = "";
+                    return;
+                }
+                else if (strResponseCheckAccount.Contains("newpassword"))
                 {
                     Settings.Current.AuthenticationCode = strResponseCheckAccount.Split(',')[1];
                     stackLogin.Visibility = Visibility.Collapsed;
