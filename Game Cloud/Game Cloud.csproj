@@ -76,6 +76,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.WebSockets.Client.Managed, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.WebSockets.Client.Managed.1.0.4\lib\net45\System.Net.WebSockets.Client.Managed.dll</HintPath>

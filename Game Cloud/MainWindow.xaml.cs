@@ -1105,7 +1105,26 @@ namespace Game_Cloud
                 {
                     Utilities.ShowStatus("Backing up local files [" + (i + 1).ToString() + " of " + totalGames + "]...", Colors.Green);
                     Directory.CreateDirectory(Utilities.AppDataFolder + @"Backups\");
-                    await Task.Run(() => ZipFile.CreateFromDirectory(gameSaveDir, Utilities.AppDataFolder + @"Backups\" + selectedGame.Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss") + " Local.zip"));
+                    var archive = ZipFile.Open(Utilities.AppDataFolder + @"Backups\" + selectedGame.Name + " " + DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss") + " Local.zip", ZipArchiveMode.Create);
+                    foreach (var file in Directory.GetFiles(gameSaveDir, "*", SearchOption.AllDirectories))
+                    {
+                        if (selectedGame.FileFilterOperator == "Only include")
+                        {
+                            if (!file.Contains(selectedGame.FileFilterPattern))
+                            {
+                                continue;
+                            }
+                        }
+                        else if (selectedGame.FileFilterOperator == "Exclude all")
+                        {
+                            if (file.Contains(selectedGame.FileFilterPattern))
+                            {
+                                continue;
+                            }
+                        }
+                        archive.CreateEntryFromFile(file, file.Replace(gameSaveDir, ""));
+                    }
+                    archive.Dispose();
                     TrimBackups();
                 }
 
