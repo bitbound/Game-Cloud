@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Game_Cloud.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Game_Cloud.Windows
         public BugReport()
         {
             InitializeComponent();
-            this.DataContext = Settings.Current;
+            this.DataContext = AccountInfo.Current;
         }
         private async void buttonSend_Click(object sender, RoutedEventArgs e)
         {
