@@ -10,6 +10,6 @@ namespace Game_Cloud.Models
     {
         public string Application { get; set; }
         public string Command { get; set; }
-        public string AuthenticationCode { get; set; }
+        public string AuthenticationToken { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace Game_Cloud
                 if (MainWindow.Current.gridGames.IsVisible)
                 {
                     MessageBox.Show("Your authentication token has expired, likely due to logging in from another location.  Please log in again.", "Login Expired", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    MainWindow.Current.hyperLogOut.DoClick();
+                    MainWindow.Current.LogOut();
                     MainWindow.Current.passPassword.Password = "";
                 }
                 return null;
@@ -137,7 +137,7 @@ namespace Game_Cloud
         {
             var webClient = new WebClient();
             webClient.Headers.Add("Command", "UploadFile");
-            webClient.Headers.Add("AuthenticationCode", Settings.Current.AuthenticationCode);
+            webClient.Headers.Add("AuthenticationToken", Settings.Current.AuthenticationToken);
             webClient.Headers.Add("AccountName", AccountInfo.Current.AccountName);
             webClient.Headers.Add("GameName", SyncedGame.Name);
             webClient.Headers.Add("RelativePath", RelativePath);

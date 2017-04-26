@@ -31,7 +31,7 @@ namespace Game_Cloud.Models
 
         public string Password { get; set; }
         public string TemporaryPassword { get; set; }
-        public string AuthenticationCode { get; set; }
+        public List<AuthenticationToken> AuthenticationTokens { get; set; } = new List<AuthenticationToken>();
         public bool IsEmailEnabled { get; set; }
         public string Email { get; set; }
         public bool IsQuestionEnabled { get; set; }

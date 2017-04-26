@@ -12,7 +12,7 @@ namespace Game_Cloud.Models
         {
             Application = "GameCloud";
             AccountName = AccountInfo.Current.AccountName;
-            AuthenticationCode = Settings.Current.AuthenticationCode;
+            AuthenticationToken = Settings.Current.AuthenticationToken;
         }
         public string AccountName { get; set; }
         public string AccountPassword { get; set; }

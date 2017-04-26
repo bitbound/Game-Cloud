@@ -107,33 +107,10 @@ namespace Game_Cloud
         {
             DragMove();
         }
-        private async void hyperLogOut_Click(object sender, RoutedEventArgs e)
+        private void hyperLogOut_Click(object sender, RoutedEventArgs e)
         {
-            tabMain.SelectedIndex = 0;
-            gridAccountInfo.Visibility = Visibility.Collapsed;
-            gridGames.Visibility = Visibility.Collapsed;
-            gridLogIn.Visibility = Visibility.Visible;
-            gridNewAccount.Visibility = Visibility.Collapsed;
-            gridTitle.Visibility = Visibility.Visible;
             Settings.Current.Save();
-            Settings.Current.LastUser = "";
-            AccountInfo.Current.Games.Clear();
-            dataSyncedGames.Items.Refresh();
-            menuAccount.IsEnabled = false;
-            menuOptions.IsEnabled = false;
-            if (Settings.Current.RememberAccount == false)
-            {
-                passPassword.Password = "";
-            }
-            Utilities.ShowStatus("Logged out.", Colors.Green);
-            this.MinWidth = 350;
-            this.MinHeight = 400;
-            this.Width = 350;
-            this.Height = 400;
-            if (Socket != null && Socket.State == WebSocketState.Open)
-            {
-                await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Logged out.", CancellationToken.None);
-            }
+            LogOut();
         }
         private void progressStorage_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -218,6 +195,10 @@ namespace Game_Cloud
         private void textUsername_LostFocus(object sender, RoutedEventArgs e)
         {
             buttonLogIn.IsDefault = false;
+        }
+        private void passPassword_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Settings.Current.AuthenticationToken = null;
         }
         private async void buttonLogIn_Click(object sender, RoutedEventArgs e)
         {
@@ -406,7 +387,7 @@ namespace Game_Cloud
                 var strResponse = await response.Content.ReadAsStringAsync();
                 if (Guid.TryParse(strResponse, out Guid authCode))
                 {
-                    Settings.Current.AuthenticationCode = strResponse;
+                    Settings.Current.AuthenticationToken = strResponse;
                     Utilities.ShowStatus("New account created!", Colors.Green);
                     await LogIn(textNewAccountName.Text.Trim(), passwordNew.Password);
                 }
@@ -1122,7 +1103,7 @@ namespace Game_Cloud
                 {
                     continue;
                 }
-     
+
                 var gameSaveDir = Utilities.ResolveEnvironmentVariables(selectedGame.Path);
                 if (gameSaveDir.Last() != '\\')
                 {
@@ -1168,7 +1149,7 @@ namespace Game_Cloud
                         selectedGame.FileList.Add(remoteFile);
                     }
                     var localFile = selectedGame.FileList.Find(gfi => gfi.FileName == remoteFile.FileName);
-                    if (!File.Exists(gameSaveDir + remoteFile.RelativePath) || remoteFile.LastWriteTime > localFile?.LastWriteTime)
+                    if (!File.Exists(gameSaveDir + remoteFile.RelativePath) || localFile.LastWriteTime == null || remoteFile.LastWriteTime > localFile?.LastWriteTime)
                     {
                         if (localFile == null)
                         {
@@ -1237,7 +1218,7 @@ namespace Game_Cloud
                     {
                         selectedGame.FileList.Find(gfi => gfi.FileName == localFile.Name).LastWriteTime = Utilities.RoundDateTime(localFile.LastWriteTimeUtc);
                     }
-                    if (remoteFile == null || localFile.LastWriteTimeUtc > remoteFile?.LastWriteTime)
+                    if (remoteFile == null || remoteFile.LastWriteTime == null || localFile.LastWriteTimeUtc > remoteFile?.LastWriteTime)
                     {
                         var response = await Services.UploadFile(selectedGame, strLocalFile, strLocalFile.Replace(gameSaveDir, "\\"));
                         if (response == null)
@@ -1299,7 +1280,6 @@ namespace Game_Cloud
             }
             await RetrieveAccount();
             tabMain.IsEnabled = true;
-            Settings.Current.Save();
         }
         private async Task AddGame(SyncedGame SyncedGame)
         {
@@ -1397,27 +1377,27 @@ namespace Game_Cloud
                 var strResponseCheckAccount = await responseCheckAccount.Content.ReadAsStringAsync();
                 if (strResponseCheckAccount == "false")
                 {
-                    Settings.Current.AuthenticationCode = "";
+                    Settings.Current.AuthenticationToken = "";
                     passPassword.Password = "";
                     Utilities.ShowStatus("Incorrect username or password.  Try again or create a new account.", Colors.Red);
                     return;
                 }
                 else if (strResponseCheckAccount == "expired")
                 {
-                    Settings.Current.AuthenticationCode = "";
+                    Settings.Current.AuthenticationToken = "";
                     Utilities.ShowStatus("Authentication token expired.  Please log in again.", Colors.Red);
                     passPassword.Password = "";
                     return;
                 }
                 else if (strResponseCheckAccount.Contains("newpassword"))
                 {
-                    Settings.Current.AuthenticationCode = strResponseCheckAccount.Split(',')[1];
+                    Settings.Current.AuthenticationToken = strResponseCheckAccount.Split(',')[1];
                     stackLogin.Visibility = Visibility.Collapsed;
                     stackNewPassword.Visibility = Visibility.Visible;
                 }
                 else if (Guid.TryParse(strResponseCheckAccount, out Guid authCode))
                 {
-                    Settings.Current.AuthenticationCode = strResponseCheckAccount;
+                    Settings.Current.AuthenticationToken = strResponseCheckAccount;
                     if (checkRememberAccount.IsChecked == true)
                     {
                         Settings.Current.RememberAccount = true;
@@ -1471,16 +1451,15 @@ namespace Game_Cloud
             }
             finally
             {
-                Settings.Current.Save();
                 buttonLogIn.IsEnabled = true;
             }
         }
-        public async Task RetrieveAccount()
+        public async Task<bool> RetrieveAccount()
         {
             var responseGetAccount = await Services.GetAccount();
             if (responseGetAccount == null)
             {
-                return;
+                return false;
             }
             var strResponseGetAccount = await responseGetAccount.Content.ReadAsStringAsync();
             Temp.Current.RemoteAccount = Json.Decode<AccountInfo>(strResponseGetAccount);
@@ -1493,6 +1472,7 @@ namespace Game_Cloud
             AccountInfo.Current.ChallengeQuestion = Temp.Current.RemoteAccount.ChallengeQuestion;
             AccountInfo.Current.ChallengeResponse = Temp.Current.RemoteAccount.ChallengeResponse;
             Settings.Current.Save();
+            return true;
         }
         public async Task AnalyzeChanges()
         {
@@ -1501,7 +1481,11 @@ namespace Game_Cloud
                 return;
             }
             Utilities.ShowStatus("Analyzing remote changes...", Colors.Green);
-            await RetrieveAccount();
+            var result = await RetrieveAccount();
+            if (!result)
+            {
+                return;
+            }
             
             foreach (var remoteGame in Temp.Current.RemoteAccount.Games)
             {
@@ -1523,7 +1507,7 @@ namespace Game_Cloud
                 else
                 {
                     localGame.StorageUse = remoteGame.StorageUse;
-                    if ( localGame.LastLocalSync != remoteGame.LastServerSync)
+                    if (localGame.LastLocalSync != remoteGame.LastServerSync)
                     {
                         localGame.Status = "☁⬇";
                         localGame.StatusDetails = "Changes are available for download.";
@@ -1598,6 +1582,33 @@ namespace Game_Cloud
             Settings.Current.Save();
             dataSyncedGames.Items.Refresh();
             Utilities.ShowStatus("", Colors.Green);
+        }
+        public async void LogOut()
+        {
+            tabMain.SelectedIndex = 0;
+            gridAccountInfo.Visibility = Visibility.Collapsed;
+            gridGames.Visibility = Visibility.Collapsed;
+            gridLogIn.Visibility = Visibility.Visible;
+            gridNewAccount.Visibility = Visibility.Collapsed;
+            gridTitle.Visibility = Visibility.Visible;
+            Settings.Current.LastUser = "";
+            AccountInfo.Current.Games.Clear();
+            dataSyncedGames.Items.Refresh();
+            menuAccount.IsEnabled = false;
+            menuOptions.IsEnabled = false;
+            if (Settings.Current.RememberAccount == false)
+            {
+                passPassword.Password = "";
+            }
+            Utilities.ShowStatus("Logged out.", Colors.Green);
+            this.MinWidth = 350;
+            this.MinHeight = 400;
+            this.Width = 350;
+            this.Height = 400;
+            if (Socket != null && Socket.State == WebSocketState.Open)
+            {
+                await Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Logged out.", CancellationToken.None);
+            }
         }
         private async Task CheckForUpdates(bool Silent)
         {

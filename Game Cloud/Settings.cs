@@ -19,7 +19,7 @@ namespace Game_Cloud
         #region Data
         public static Settings Current { get; set; } = new Settings();
         public string LastUser { get; set; }
-        public string AuthenticationCode { get; set; }
+        public string AuthenticationToken { get; set; }
         #endregion Data
 
         #region Options
@@ -80,7 +80,7 @@ namespace Game_Cloud
                     MaximumBackupSize = globalSettings.MaximumBackupSize;
                     RememberAccount = globalSettings.RememberAccount;
                     LastUser = globalSettings.LastUser;
-                    AuthenticationCode = globalSettings.AuthenticationCode;
+                    AuthenticationToken = globalSettings.AuthenticationToken;
                 }
             }
             if (RememberAccount)

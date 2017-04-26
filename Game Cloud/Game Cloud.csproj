@@ -112,6 +112,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\AccountInfo.cs" />
+    <Compile Include="Models\AuthenticationToken.cs" />
     <Compile Include="Models\BaseRequest.cs" />
     <Compile Include="Models\ChangeItem.cs" />
     <Compile Include="Models\GameFileInfo.cs" />

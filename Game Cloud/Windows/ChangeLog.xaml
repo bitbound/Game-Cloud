@@ -13,7 +13,15 @@
             <StackPanel>
 
                 <TextBlock Margin="0,10,0,0">
-                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.2 "/>
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.1.0 "/>
+                    <Run Text=" April 25, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Fixed a bug (hopefully) with syncing some games with file filters." TextWrapping="Wrap"></TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Added support for multiple session tokens (i.e. having 'Remember Account' enabled on multiple computers)." TextWrapping="Wrap"></TextBlock>
+                
+                
+                <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.0.3 "/>
                     <Run Text=" April 20, 2017"/>
                 </TextBlock>
                 <TextBlock Margin="20,0,0,0" Text="- Backup operation now honors file filter." TextWrapping="Wrap"></TextBlock>
