@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1047,7 +1047,7 @@ namespace Game_Cloud
                 textChatWindow.Inlines.Add(runUpload);
                 textChatWindow.Inlines.Add(new LineBreak());
                 var client = new WebClient();
-                var response = await client.UploadFileTaskAsync("https://translucency.info/Services/Downloader/", diag.FileName);
+                var response = await client.UploadFileTaskAsync("https://translucency.azurewebsites.net/Services/Downloader/", diag.FileName);
                 var strResponse = Encoding.UTF8.GetString(response);
                 await Socket_Handler.SocketSend(new
                 {
@@ -1096,7 +1096,7 @@ namespace Game_Cloud
                 }
                 catch
                 {
-                    selectedGame.Status = "⚠";
+                    selectedGame.Status = "?";
                     continue;
                 }
                 if (!Directory.Exists(Utilities.ResolveEnvironmentVariables(selectedGame.Path)))
@@ -1238,7 +1238,7 @@ namespace Game_Cloud
                 var updated = Utilities.RoundDateTime(DateTime.Now);
                 selectedGame.LastLocalSync = updated;
                 selectedGame.LastServerSync = updated;
-                selectedGame.Status = "✔";
+                selectedGame.Status = "?";
                 selectedGame.StatusDetails = "This game is up-to-date.";
                 long size = 0;
                 foreach (var fi in new DirectoryInfo(gameSaveDir).GetFiles("*", SearchOption.AllDirectories))
@@ -1500,7 +1500,7 @@ namespace Game_Cloud
                         FileFilterOperator = remoteGame.FileFilterOperator,
                         FileFilterPattern = remoteGame.FileFilterPattern,
                         LastServerSync = remoteGame.LastServerSync,
-                        Status = "☁⬇",
+                        Status = "??",
                         StatusDetails = "Changes are available for download.",
                     });
                 }
@@ -1509,14 +1509,14 @@ namespace Game_Cloud
                     localGame.StorageUse = remoteGame.StorageUse;
                     if (localGame.LastLocalSync != remoteGame.LastServerSync)
                     {
-                        localGame.Status = "☁⬇";
+                        localGame.Status = "??";
                         localGame.StatusDetails = "Changes are available for download.";
                     }
                     foreach (var file in remoteGame.FileList)
                     {
                         if (!File.Exists(Utilities.ResolveEnvironmentVariables(remoteGame.Path) + "\\" + file.RelativePath))
                         {
-                            localGame.Status = "☁⬇";
+                            localGame.Status = "??";
                             localGame.StatusDetails = "Changes are available for download.";
                         }
                     }
@@ -1532,7 +1532,7 @@ namespace Game_Cloud
                     listRemove.Add(game);
                     continue;
                 }
-                if (game.Status == "⛔" || game.Status == "✖" || game.Status == "❓" || game.Status == "⚠") 
+                if (game.Status == "?" || game.Status == "?" || game.Status == "?" || game.Status == "?") 
                 {
                     continue;
                 }
@@ -1558,19 +1558,19 @@ namespace Game_Cloud
                     var creationTime = File.GetCreationTime(file);
                     if (lastWriteTime > game.LastLocalSync || creationTime > game.LastLocalSync)
                     {
-                        if (!game.Status.Contains("☁⬇"))
+                        if (!game.Status.Contains("??"))
                         {
-                            game.Status = "☁⬆";
+                            game.Status = "??";
                             game.StatusDetails = "Changes are available for upload.";
                         }
-                        else if (!game.Status.Contains("⬆"))
+                        else if (!game.Status.Contains("?"))
                         {
-                            game.Status += "⬆";
+                            game.Status += "?";
                             game.StatusDetails = "Changes are available for both download and upload.";
                         }
                     }
                 }
-                if (game.Status == "✔")
+                if (game.Status == "?")
                 {
                     game.StatusDetails = "This game is up-to-date.";
                 }

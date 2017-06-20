@@ -1,18 +1,13 @@
-﻿<Window x:Class="Game_Cloud.Windows.About"
+<Window x:Class="Game_Cloud.Windows.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game_Cloud.Windows"
         mc:Ignorable="d"
-        Title="About Game Cloud" Height="350" Width="450" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
+        Title="About Game Cloud" Height="350" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="1.5*"/>
-        </Grid.ColumnDefinitions>
-        <Image Source="/Game Cloud;component/Assets/T (About).png"></Image>
-        <StackPanel Margin="10" Grid.Column="1">
+        <StackPanel Margin="10">
             <TextBlock Text="Game Cloud" Margin="0, 0, 0, 10" FontWeight="Bold" FontSize="15"/>
             <TextBlock Margin="0, 0, 0, 10">
                 <TextBlock Text="Version "></TextBlock>
@@ -21,7 +16,7 @@
             </TextBlock>
             <TextBlock Margin="0, 0, 0, 10" >
                 <TextBlock>Translucency (</TextBlock>
-                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">https://translucency.info</Hyperlink>
+                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">https://translucency.azurewebsites.net</Hyperlink>
                 <TextBlock>)</TextBlock>
             </TextBlock>
             <Button x:Name="buttonLicense" HorizontalAlignment="Left" Margin="0, 0, 0, 10" Height="25" Width="55" Click="buttonLicense_Click">License...</Button>

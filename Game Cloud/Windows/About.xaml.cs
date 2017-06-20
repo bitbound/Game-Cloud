@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +32,7 @@ namespace Game_Cloud.Windows
         }
         private void hyperWebsite_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://translucency.info");
+            System.Diagnostics.Process.Start("https://translucency.azurewebsites.net");
         }
 
         private void hyperChangeLog_Click(object sender, RoutedEventArgs e)

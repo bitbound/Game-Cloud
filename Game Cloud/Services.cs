@@ -1,4 +1,4 @@
-﻿using Game_Cloud.Models;
+using Game_Cloud.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,7 +18,7 @@ namespace Game_Cloud
 #if DEBUG
         public static string ServicePath = "http://localhost:58901/Services/GameCloud";
 #else
-        public static string ServicePath = "https://translucency.info/Services/GameCloud";
+        public static string ServicePath = "https://translucency.azurewebsites.net/Services/GameCloud";
 #endif
         public static async Task<HttpResponseMessage> POSTContent(Request Content)
         {

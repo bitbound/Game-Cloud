@@ -1,4 +1,4 @@
-﻿using Game_Cloud.Models;
+using Game_Cloud.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +52,7 @@ namespace Game_Cloud.Windows
                     request.Add(new StringContent(textName.Text), "Name");
                     request.Add(new StringContent("Game Cloud Bug Report"), "Subject");
                     request.Add(new StringContent(message), "Message");
-                    var result = await client.PostAsync("https://translucency.info/Services/GameCloud/", request);
+                    var result = await client.PostAsync("https://translucency.azurewebsites.net/Services/GameCloud/", request);
                     var response = await result.Content.ReadAsStringAsync();
                     if (result.IsSuccessStatusCode)
                     {
