@@ -122,6 +122,7 @@
     <Compile Include="Models\SyncedGame.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Socket_Handler.cs" />
+    <Compile Include="Status.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Temp.cs" />

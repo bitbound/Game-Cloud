@@ -1096,7 +1096,7 @@ namespace Game_Cloud
                 }
                 catch
                 {
-                    selectedGame.Status = "?";
+                    selectedGame.Status = Status.SyncError;
                     continue;
                 }
                 if (!Directory.Exists(Utilities.ResolveEnvironmentVariables(selectedGame.Path)))
@@ -1238,7 +1238,7 @@ namespace Game_Cloud
                 var updated = Utilities.RoundDateTime(DateTime.Now);
                 selectedGame.LastLocalSync = updated;
                 selectedGame.LastServerSync = updated;
-                selectedGame.Status = "?";
+                selectedGame.Status = Status.OK;
                 selectedGame.StatusDetails = "This game is up-to-date.";
                 long size = 0;
                 foreach (var fi in new DirectoryInfo(gameSaveDir).GetFiles("*", SearchOption.AllDirectories))
@@ -1500,7 +1500,7 @@ namespace Game_Cloud
                         FileFilterOperator = remoteGame.FileFilterOperator,
                         FileFilterPattern = remoteGame.FileFilterPattern,
                         LastServerSync = remoteGame.LastServerSync,
-                        Status = "??",
+                        Status = Status.DownloadAvailable,
                         StatusDetails = "Changes are available for download.",
                     });
                 }
@@ -1509,14 +1509,14 @@ namespace Game_Cloud
                     localGame.StorageUse = remoteGame.StorageUse;
                     if (localGame.LastLocalSync != remoteGame.LastServerSync)
                     {
-                        localGame.Status = "??";
+                        localGame.Status = Status.DownloadAvailable;
                         localGame.StatusDetails = "Changes are available for download.";
                     }
                     foreach (var file in remoteGame.FileList)
                     {
                         if (!File.Exists(Utilities.ResolveEnvironmentVariables(remoteGame.Path) + "\\" + file.RelativePath))
                         {
-                            localGame.Status = "??";
+                            localGame.Status = Status.DownloadAvailable;
                             localGame.StatusDetails = "Changes are available for download.";
                         }
                     }
@@ -1532,7 +1532,7 @@ namespace Game_Cloud
                     listRemove.Add(game);
                     continue;
                 }
-                if (game.Status == "?" || game.Status == "?" || game.Status == "?" || game.Status == "?") 
+                if (game.Status == Status.Error || game.Status == Status.SyncError || game.Status == Status.FolderPathUnknown || game.Status == Status.SavePathNotFound) 
                 {
                     continue;
                 }
@@ -1558,19 +1558,19 @@ namespace Game_Cloud
                     var creationTime = File.GetCreationTime(file);
                     if (lastWriteTime > game.LastLocalSync || creationTime > game.LastLocalSync)
                     {
-                        if (!game.Status.Contains("??"))
+                        if (!game.Status.Contains(Status.DownloadAvailable))
                         {
-                            game.Status = "??";
+                            game.Status = Status.UploadAvailable;
                             game.StatusDetails = "Changes are available for upload.";
                         }
-                        else if (!game.Status.Contains("?"))
+                        else if (!game.Status.Contains(Status.DownloadUploadAvailable))
                         {
-                            game.Status += "?";
+                            game.Status = Status.DownloadUploadAvailable;
                             game.StatusDetails = "Changes are available for both download and upload.";
                         }
                     }
                 }
-                if (game.Status == "?")
+                if (game.Status == Status.OK)
                 {
                     game.StatusDetails = "This game is up-to-date.";
                 }
