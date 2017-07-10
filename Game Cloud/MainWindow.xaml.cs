@@ -478,7 +478,7 @@ namespace Game_Cloud
                 if (Socket == null || (Socket.State != WebSocketState.Open && Socket.State != WebSocketState.Connecting))
                 {
                     Socket = SystemClientWebSocket.CreateClientWebSocket();
-                    await Socket.ConnectAsync(new Uri("wss://translucency.info/Services/GameCloud/Chat"), CancellationToken.None);
+                    await Socket.ConnectAsync(new Uri("wss://translucency.azurewebsites.net/Services/GameCloud/Chat"), CancellationToken.None);
                     Socket_Handler.HandleSocket(Socket);
                     while (Socket.State != WebSocketState.Open)
                     {
@@ -1639,7 +1639,7 @@ namespace Game_Cloud
                 var result = MessageBox.Show("A new version of Game Cloud is available!  Would you like to download it now?  It's an instant and effortless process.", "New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    await webClient.DownloadFileTaskAsync(new Uri("http://translucency.info/Downloads/Game Cloud.exe"), strFilePath);
+                    await webClient.DownloadFileTaskAsync(new Uri("https://translucency.azurewebsites.net/Downloads/Game Cloud.exe"), strFilePath);
                     Process.Start(strFilePath, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
                     App.Current.Shutdown();
                     return;
