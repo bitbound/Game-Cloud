@@ -32,7 +32,7 @@ namespace Game_Cloud.Windows
         }
         private void hyperWebsite_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://translucency.azurewebsites.net");
+            System.Diagnostics.Process.Start("http://invis.me");
         }
 
         private void hyperChangeLog_Click(object sender, RoutedEventArgs e)

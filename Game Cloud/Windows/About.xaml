@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Game_Cloud.Windows"
         mc:Ignorable="d"
-        Title="About Game Cloud" Height="350" Width="350" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
+        Title="About Game Cloud" Height="350" Width="300" Icon="/Game Cloud;component/Assets/GameCloud.png" WindowStartupLocation="CenterOwner">
     <Grid>
         <StackPanel Margin="10">
             <TextBlock Text="Game Cloud" Margin="0, 0, 0, 10" FontWeight="Bold" FontSize="15"/>
@@ -16,7 +16,7 @@
             </TextBlock>
             <TextBlock Margin="0, 0, 0, 10" >
                 <TextBlock>Translucency (</TextBlock>
-                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">https://translucency.azurewebsites.net</Hyperlink>
+                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">http://invis.me</Hyperlink>
                 <TextBlock>)</TextBlock>
             </TextBlock>
             <Button x:Name="buttonLicense" HorizontalAlignment="Left" Margin="0, 0, 0, 10" Height="25" Width="55" Click="buttonLicense_Click">License...</Button>

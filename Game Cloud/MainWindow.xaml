@@ -81,7 +81,6 @@
                 <TextBlock Text=" MB"/>
             </StackPanel>
             <ProgressBar x:Name="progressStorage" Height="10" Margin="0,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="{Binding ActualWidth, ElementName=stackStorage, Mode=OneWay}" ValueChanged="progressStorage_ValueChanged" Value="{Binding StoragePercentage}"/>
-            <TextBlock x:Name="textDonate" Margin="0,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" FontSize="10"><Hyperlink x:Name="hyperDonate" Click="hyperDonate_Click"><Run Text="Donations are appreciated!"/></Hyperlink></TextBlock>
         </Grid>
         <TextBlock x:Name="textStatus" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" MaxWidth="275" Foreground="Green" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,100,15,0" TextWrapping="Wrap"/>
         <Grid x:Name="gridLogIn" Margin="10, 100, 10, 10">

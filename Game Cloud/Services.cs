@@ -18,7 +18,7 @@ namespace Game_Cloud
 #if DEBUG
         public static string ServicePath = "http://localhost:58901/Services/GameCloud";
 #else
-        public static string ServicePath = "https://translucency.azurewebsites.net/Services/GameCloud";
+        public static string ServicePath = "http://invis.me/Services/GameCloud";
 #endif
         public static async Task<HttpResponseMessage> POSTContent(Request Content)
         {
