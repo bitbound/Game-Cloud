@@ -12,6 +12,12 @@
         <ScrollViewer Margin="5,60,5,0" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <TextBlock Margin="0,10,0,0">
+                    <Run FontWeight="Bold" FontSize="14" Text="Version 2.3.2 "/>
+                    <Run Text=" August 29, 2017"/>
+                </TextBlock>
+                <TextBlock Margin="20,0,0,0" Text="- Changed ws/http to wss/https." TextWrapping="Wrap"></TextBlock>
+                
+                <TextBlock Margin="0,10,0,0">
                     <Run FontWeight="Bold" FontSize="14" Text="Version 2.3.1 "/>
                     <Run Text=" August 29, 2017"/>
                 </TextBlock>
