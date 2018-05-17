@@ -201,7 +201,7 @@ namespace Game_Cloud
             try
             {
                 var client = new HttpClient();
-                await client.GetAsync(Services.ServicePath + "EchoIP");
+                await client.GetAsync(Services.EchoPath);
             }
             catch (Exception ex)
             {
@@ -325,7 +325,7 @@ namespace Game_Cloud
             try
             {
                 var client = new HttpClient();
-                await client.GetAsync(Services.ServicePath + "EchoIP");
+                await client.GetAsync(Services.EchoPath);
             }
             catch (Exception ex)
             {
@@ -474,7 +474,7 @@ namespace Game_Cloud
                 if (Socket == null || (Socket.State != WebSocketState.Open && Socket.State != WebSocketState.Connecting))
                 {
                     Socket = SystemClientWebSocket.CreateClientWebSocket();
-                    await Socket.ConnectAsync(new Uri("ws://invis.me/Services/GameCloud/Chat"), CancellationToken.None);
+                    await Socket.ConnectAsync(new Uri("wss://lucent.rocks/Services/GameCloudChat"), CancellationToken.None);
                     Socket_Handler.HandleSocket(Socket);
                     while (Socket.State != WebSocketState.Open)
                     {
@@ -1043,7 +1043,7 @@ namespace Game_Cloud
                 textChatWindow.Inlines.Add(runUpload);
                 textChatWindow.Inlines.Add(new LineBreak());
                 var client = new WebClient();
-                var response = await client.UploadFileTaskAsync("http://invis.me/Services/Downloader/", diag.FileName);
+                var response = await client.UploadFileTaskAsync("https://lucent.rocks/Services/Downloader/", diag.FileName);
                 var strResponse = Encoding.UTF8.GetString(response);
                 await Socket_Handler.SocketSend(new
                 {
@@ -1635,7 +1635,7 @@ namespace Game_Cloud
                 var result = MessageBox.Show("A new version of Game Cloud is available!  Would you like to download it now?  It's an instant and effortless process.", "New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    await webClient.DownloadFileTaskAsync(new Uri("http://invis.me/Downloads/Game Cloud.exe"), strFilePath);
+                    await webClient.DownloadFileTaskAsync(new Uri("https://lucent.rocks/Downloads/Game Cloud.exe"), strFilePath);
                     Process.Start(strFilePath, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
                     App.Current.Shutdown();
                     return;

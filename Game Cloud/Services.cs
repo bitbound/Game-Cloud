@@ -16,9 +16,11 @@ namespace Game_Cloud
     public static class Services
     {
 #if DEBUG
-        public static string ServicePath = "http://localhost:58901/Services/GameCloud";
+        public static string ServicePath { get; set; } = "http://localhost:8874/Services/GameCloud/";
+        public static string EchoPath { get; set; } = "http://localhost:8874/Services/EchoIP/";
 #else
-        public static string ServicePath = "http://invis.me/Services/GameCloud";
+        public static string ServicePath { get; set; } = "https://lucent.rocks/Services/GameCloud/";
+        public static string EchoPath { get; set; } = "https://lucent.rocks/Services/EchoIP/";
 #endif
         public static async Task<HttpResponseMessage> POSTContent(Request Content)
         {
