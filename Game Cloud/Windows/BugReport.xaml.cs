@@ -53,7 +53,7 @@ namespace Game_Cloud.Windows
                     request.Add(new StringContent("Game Cloud Bug Report"), "Subject");
                     request.Add(new StringContent("translucency_software@outlook.com"), "From");
                     request.Add(new StringContent(message), "Message");
-                    var result = await client.PostAsync("https://lucent.rocks/Services/GameCloud/", request);
+                    var result = await client.PostAsync("https://lucency.co/Services/GameCloud/", request);
                     var response = await result.Content.ReadAsStringAsync();
                     if (result.IsSuccessStatusCode)
                     {

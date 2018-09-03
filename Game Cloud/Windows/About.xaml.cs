@@ -32,7 +32,7 @@ namespace Game_Cloud.Windows
         }
         private void hyperWebsite_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://lucent.rocks");
+            System.Diagnostics.Process.Start("https://lucency.co");
         }
 
         private void hyperChangeLog_Click(object sender, RoutedEventArgs e)

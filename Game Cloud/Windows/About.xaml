@@ -16,7 +16,7 @@
             </TextBlock>
             <TextBlock Margin="0, 0, 0, 10" >
                 <TextBlock>Translucency (</TextBlock>
-                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">https://lucent.rocks</Hyperlink>
+                <Hyperlink x:Name="hyperWebsite" Click="hyperWebsite_Click">https://lucency.co</Hyperlink>
                 <TextBlock>)</TextBlock>
             </TextBlock>
             <Button x:Name="buttonLicense" HorizontalAlignment="Left" Margin="0, 0, 0, 10" Height="25" Width="55" Click="buttonLicense_Click">License...</Button>

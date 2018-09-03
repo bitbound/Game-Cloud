@@ -77,7 +77,7 @@ namespace Game_Cloud
                 MainWindow.Current.WriteToLog(ex);
                 if (MainWindow.Current.gridGames.Visibility == Visibility.Visible)
                 {
-                    await Socket.ConnectAsync(new Uri("wss://lucent.rocks/Services/GameCloudChat"), CancellationToken.None);
+                    await Socket.ConnectAsync(new Uri("wss://lucency.co/Services/GameCloudChat"), CancellationToken.None);
                 }
             }
 

@@ -44,7 +44,7 @@ namespace Game_Cloud.Windows
                     request.Add(new StringContent("Message from Game Cloud"), "Subject");
                     request.Add(new StringContent(textEmail.Text), "From");
                     request.Add(new StringContent(textMessage.Text), "Message");
-                    var result = await client.PostAsync("https://lucent.rocks/Services/GameCloud/", request);
+                    var result = await client.PostAsync("https://lucency.co/Services/GameCloud/", request);
                     var response = await result.Content.ReadAsStringAsync();
                     if (result.IsSuccessStatusCode)
                     {
