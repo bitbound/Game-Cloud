@@ -15,13 +15,9 @@ namespace Game_Cloud
 {
     public static class Services
     {
-#if DEBUG
-        public static string ServicePath { get; set; } = "http://localhost:8874/Services/GameCloud/";
-        public static string EchoPath { get; set; } = "http://localhost:8874/Services/EchoIP/";
-#else
-        public static string ServicePath { get; set; } = "https://lucency.co/Services/GameCloud/";
-        public static string EchoPath { get; set; } = "https://lucency.co/Services/EchoIP/";
-#endif
+        public static string ServicePath { get; set; } = $"{MainWindow.Current.ServerUrl}/Services/GameCloud/";
+        public static string EchoPath { get; set; } = $"{MainWindow.Current.ServerUrl}/Services/EchoIP/";
+
         public static async Task<HttpResponseMessage> POSTContent(Request Content)
         {
             var client = new HttpClient();

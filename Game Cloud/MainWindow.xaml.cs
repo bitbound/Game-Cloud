@@ -27,9 +27,15 @@ namespace Game_Cloud
     {
         public static MainWindow Current { get; set; }
         public WebSocket Socket { get; set; }
+        public string ServerUrl { get; }
         public MainWindow()
         {
             App.Current.DispatcherUnhandledException += DispatcherUnhandledException;
+#if DEBUG
+            ServerUrl = "http://localhost:52192";
+#else
+            ServerUrl = "https://gamecloud.lucency.co";
+#endif
             InitializeComponent();
             this.DataContext = AccountInfo.Current;
             comboKnownGames.DataContext = Temp.Current;
@@ -74,7 +80,7 @@ namespace Game_Cloud
             }
         }
 
-        #region Main Window
+#region Main Window
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Utilities.ShowStatus("Checking for updates...", Colors.Green);
@@ -178,11 +184,11 @@ namespace Game_Cloud
             tabMain.IsEnabled = true;
             WriteToLog(e.Exception);
         }
-        #endregion Main Window
+#endregion Main Window
 
 
 
-        #region Login
+#region Login
         private void textUsername_GotFocus(object sender, RoutedEventArgs e)
         {
             buttonLogIn.IsDefault = true;
@@ -317,8 +323,8 @@ namespace Game_Cloud
             }
         }
 
-        #endregion Login
-        #region New Account
+#endregion Login
+#region New Account
         private async void buttonCreateAccount_Click(object sender, RoutedEventArgs e)
         {
             (sender as Button).IsEnabled = false;
@@ -429,9 +435,9 @@ namespace Game_Cloud
             gridNewAccount.Visibility = Visibility.Collapsed;
             gridLogIn.Visibility = Visibility.Visible;
         }
-        #endregion New Account
+#endregion New Account
 
-        #region Tab Control
+#region Tab Control
         private async void tabMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(e.Source is TabControl) || e.RemovedItems.Count == 0)
@@ -474,7 +480,7 @@ namespace Game_Cloud
                 if (Socket == null || (Socket.State != WebSocketState.Open && Socket.State != WebSocketState.Connecting))
                 {
                     Socket = SystemClientWebSocket.CreateClientWebSocket();
-                    await Socket.ConnectAsync(new Uri("wss://lucency.co/Services/GameCloudChat"), CancellationToken.None);
+                    await Socket.ConnectAsync(new Uri($"{ServerUrl.Replace("http","ws")}/Services/GameCloudChat"), CancellationToken.None);
                     Socket_Handler.HandleSocket(Socket);
                     while (Socket.State != WebSocketState.Open)
                     {
@@ -487,9 +493,9 @@ namespace Game_Cloud
                 }
             }
         }
-        #endregion Tab Control
+#endregion Tab Control
 
-        #region Tab - Synced Games
+#region Tab - Synced Games
         private void menuOpenFolder_Click(Object sender, RoutedEventArgs e)
         {
             if (dataSyncedGames.SelectedItems.Count > 0)
@@ -681,9 +687,9 @@ namespace Game_Cloud
                 Temp.Current.BypassAnalysis = false;
             }
         }
-        #endregion Tab - Synced Games
+#endregion Tab - Synced Games
 
-        #region Tab - Game Database
+#region Tab - Game Database
         private async void buttonAddGame_Click(object sender, RoutedEventArgs e)
         {
             if (comboKnownGames.SelectedIndex == -1)
@@ -823,9 +829,9 @@ namespace Game_Cloud
             }
             await Services.RateGame(kg);
         }
-        #endregion Tab - Game Database
+#endregion Tab - Game Database
 
-        #region Tab - New Game
+#region Tab - New Game
         private async void buttonAddCustom_Click(object sender, RoutedEventArgs e)
         {
             if (textCustomName.Text.Trim() == "")
@@ -929,8 +935,8 @@ namespace Game_Cloud
                 TestRootPath();
             }
         }
-        #endregion Tab - New Game
-        #region Tab - Ask for Help
+#endregion Tab - New Game
+#region Tab - Ask for Help
         private void radioViewQuestions_Checked(object sender, RoutedEventArgs e)
         {
             borderViewQuestions.Visibility = Visibility.Visible;
@@ -1001,9 +1007,9 @@ namespace Game_Cloud
             welcome.Owner = this;
             welcome.ShowDialog();
         }
-        #endregion Tab - Ask for Help
+#endregion Tab - Ask for Help
 
-        #region Tab - Chat
+#region Tab - Chat
         private void textChatInput_GotFocus(object sender, RoutedEventArgs e)
         {
             buttonChatSend.IsDefault = true;
@@ -1043,7 +1049,7 @@ namespace Game_Cloud
                 textChatWindow.Inlines.Add(runUpload);
                 textChatWindow.Inlines.Add(new LineBreak());
                 var client = new WebClient();
-                var response = await client.UploadFileTaskAsync("https://lucency.co/Services/Downloader/", diag.FileName);
+                var response = await client.UploadFileTaskAsync($"https://lucency.co/Services/Downloader/", diag.FileName);
                 var strResponse = Encoding.UTF8.GetString(response);
                 await Socket_Handler.SocketSend(new
                 {
@@ -1054,9 +1060,9 @@ namespace Game_Cloud
                 });
             }
         }
-        #endregion Tab - Chat
+#endregion Tab - Chat
 
-        #region Tab - Feedback
+#region Tab - Feedback
         private void buttonEmailMe_Click(object sender, RoutedEventArgs e)
         {
             var winContact = new Windows.ContactMe();
@@ -1071,8 +1077,8 @@ namespace Game_Cloud
         }
         public string AccountName = AccountInfo.Current.AccountName;
 
-        #endregion Tab - Feedback
-        #region Helper Methods
+#endregion Tab - Feedback
+#region Helper Methods
         public async Task SyncGame()
         {
             tabMain.IsEnabled = false;
@@ -1635,7 +1641,7 @@ namespace Game_Cloud
                 var result = MessageBox.Show("A new version of Game Cloud is available!  Would you like to download it now?  It's an instant and effortless process.", "New Version Available", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    await webClient.DownloadFileTaskAsync(new Uri("https://lucency.co/Downloads/Game Cloud.exe"), strFilePath);
+                    await webClient.DownloadFileTaskAsync(new Uri($"https://lucency.co/Downloads/Game Cloud.exe"), strFilePath);
                     Process.Start(strFilePath, "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
                     App.Current.Shutdown();
                     return;
@@ -1734,6 +1740,6 @@ namespace Game_Cloud
                 ex = ex.InnerException;
             }
         }
-        #endregion Helper Methods
+#endregion Helper Methods
     }
 }
